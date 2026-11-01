@@ -1,0 +1,174 @@
+{
+  "repository": "nvidia/simready-assets",
+  "revision": "4763fbfaa4f8e97658e68b57d01b4c86659e08b5",
+  "files": [
+    {
+      "path": "barrier_fence_metal_a02/.metadata/LICENSE.txt",
+      "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411"
+    },
+    {
+      "path": "barrier_fence_metal_a02/.metadata/com.nvidia.simready.conformance.Package-Candidate@1.0.0.json",
+      "sha256": "81ab351e89ae00d4c5dfab771e5da9e260f02c3ce7329b0e144ef6b5576a4f04"
+    },
+    {
+      "path": "barrier_fence_metal_a02/.metadata/com.nvidia.simready.conformance.Package@1.0.0.json",
+      "sha256": "c3912b4e137e4039dc005c144aaa68273c86849313603daffb93bedf34df55ad"
+    },
+    {
+      "path": "barrier_fence_metal_a02/.metadata/com.nvidia.simready.packaging.bom.json",
+      "sha256": "060962c86d8ae7e3c813afeeca6857d04413d03d56c4e2ffc2ae710be0c226cf"
+    },
+    {
+      "path": "barrier_fence_metal_a02/.metadata/com.nvidia.simready.root_usds.json",
+      "sha256": "1821bfc94d71cae27c3332c578a001ed437f988c9b87cc96669c18f193af27e9"
+    },
+    {
+      "path": "barrier_fence_metal_a02/com.nvidia.simready.packaging.json",
+      "sha256": "01460d7af4058a3bf89c04fd021625641802fda9c41f70d69a9f69df7f29effc"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/MuJoCo/disabled.usda",
+      "sha256": "3e608fedb9328133bf37960f7f2ed6ded7700afc744228feba0c57ca41f7c34e"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/MuJoCo/enabled.usda",
+      "sha256": "8cbe0386a61c295935fdaca06f7ee4d4281afa0acf61bff71af5d7d8ef085b1c"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/Newton/disabled.usda",
+      "sha256": "3e608fedb9328133bf37960f7f2ed6ded7700afc744228feba0c57ca41f7c34e"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/Newton/enabled.usda",
+      "sha256": "c7f415e58efb48b9aa9be5594c86e053c7145e9ca4b225b2549fa8d25807d0b7"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/PhysX/disabled.usda",
+      "sha256": "3e608fedb9328133bf37960f7f2ed6ded7700afc744228feba0c57ca41f7c34e"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/PhysX/enabled.usda",
+      "sha256": "ab0d90cbf5490d9166dab155c5d98f92cad7f134f6e91fd245f750b37a54958f"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/Physics/physics.usda",
+      "sha256": "701a6f089d948816a064a0f205ddbac428879742d9ac138f1a6a2d1255ba463d"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/base.usda",
+      "sha256": "3c285d3a670bdc8644dcec189195c59d737c5666492adede44a95b55d5d7220b"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/geometries.usd",
+      "sha256": "9881aceae428a70a666771fdfdb970735195163f5ae1d76cb921206400f49dca"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/instances.usda",
+      "sha256": "263b6cfce49cabef8c2ce511eb88307827ecdb3a7d5a53b7786fb7dfc009f63f"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/instances_mujoco.usda",
+      "sha256": "7ab9ace60a02803692f7a21944c2407b3ea2655fe662d0ee442ec1ea5abf5b04"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/instances_newton.usda",
+      "sha256": "4fdfcef000d1f963ee31daad72e16b82d14ad054735dd0064f009213c09d329f"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/instances_physx.usda",
+      "sha256": "7925da75ce2bde34e8d2af59f8fa28e6cef5f2296eeee480517332fdde4e1089"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/payloads/materials.usda",
+      "sha256": "cd12a5d74c3ad69eb0236828df74f03faab803848c18ad26424995d46b092375"
+    },
+    {
+      "path": "barrier_fence_metal_a02/simready_usd/sm_barrier_fence_metal_a02_01.usd",
+      "sha256": "fdabc4dbd1f7b7894e9e8af27cac140553b702db4e58cf1537fede77d94176a4"
+    },
+    {
+      "path": "electrical_power_terminal_a01/.metadata/LICENSE.txt",
+      "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411"
+    },
+    {
+      "path": "electrical_power_terminal_a01/.metadata/com.nvidia.simready.conformance.Package-Candidate@1.0.0.json",
+      "sha256": "234f96a3648121369903592051113847460068ba485b55d0fdb38f0ed134a805"
+    },
+    {
+      "path": "electrical_power_terminal_a01/.metadata/com.nvidia.simready.conformance.Package@1.0.0.json",
+      "sha256": "2755f176ebcf5c4b269f6033f875eced8904ea9811416ef3e02b643f92a26544"
+    },
+    {
+      "path": "electrical_power_terminal_a01/.metadata/com.nvidia.simready.packaging.bom.json",
+      "sha256": "7a989f02b0a99c52f6cf2ea88eba657cc1005dff5230c3d26521096f7a499859"
+    },
+    {
+      "path": "electrical_power_terminal_a01/.metadata/com.nvidia.simready.root_usds.json",
+      "sha256": "c958265c02155af11b742af249d09bf4533869026e6670d7d9e2231dfa231f09"
+    },
+    {
+      "path": "electrical_power_terminal_a01/com.nvidia.simready.packaging.json",
+      "sha256": "9399f8d595c7f8035db66585b24fc207768806631fbba9cd209ee37e395f3b8b"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/MuJoCo/disabled.usda",
+      "sha256": "814de4bbe456c5a38083b65357867d9d33c6fa526569296d87cfa03caf29c65b"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/MuJoCo/enabled.usda",
+      "sha256": "dc19f302503609a3f4899bb675329c1361d1ffdd1084508b2437b0283468d0e6"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/Newton/disabled.usda",
+      "sha256": "814de4bbe456c5a38083b65357867d9d33c6fa526569296d87cfa03caf29c65b"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/Newton/enabled.usda",
+      "sha256": "e1ad13582903ed1c6d3632cf2f22d085a2da85a807389a33096538131e65e18c"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/PhysX/disabled.usda",
+      "sha256": "814de4bbe456c5a38083b65357867d9d33c6fa526569296d87cfa03caf29c65b"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/PhysX/enabled.usda",
+      "sha256": "c3486386a7d541d27c9cd4c23d459346b8377de83880a0d4f0ce717b503725bc"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/Physics/physics.usda",
+      "sha256": "6d174590fd66891112846649b42e2d711ba9b9f7ce4e293876985efcb9080d6e"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/base.usda",
+      "sha256": "2e82948ef52efe2b7433159de9d50465ab1533fc0837b9992f67f377b584fe89"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/geometries.usd",
+      "sha256": "333e8f4731e838b24d5ead5c6a8dba2d1c4b54b76ee2e5e284663bf10d369c0f"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/instances.usda",
+      "sha256": "656ad52eca1c35481f65177d101925382a97d762c6503f83ca7da9dba852ca1e"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/instances_mujoco.usda",
+      "sha256": "a4769de95245b83bbe0967bf85eb6dbd1661b1d2414a9559dd7cfb4ae4d58d5d"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/instances_newton.usda",
+      "sha256": "a5e196f666aa40e02f7717710c3bfb7a652bc8c2d810b41b143fc23b66f649df"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/instances_physx.usda",
+      "sha256": "9181a9e2cfbeeaa9b515ca234a8f7cb87823738272e8dfd95d60edc13ce019bd"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/payloads/materials.usda",
+      "sha256": "e217bbe6ffe9ef648f1af1af2160b7434e7e6836c5aea6c66063f0dfcb339068"
+    },
+    {
+      "path": "electrical_power_terminal_a01/simready_usd/sm_electrical_power_terminal_a01_01.usd",
+      "sha256": "932389722ee66a1beaa1205f75cb40541ddd266f826a0fa9812b93cb2afe5646"
+    }
+  ]
+}

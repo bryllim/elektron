@@ -1,0 +1,30 @@
+{
+  "status": "imported-browser-geometry",
+  "reviewedOn": "2026-10-30",
+  "repository": "nvidia/simready-assets",
+  "revision": "4763fbfaa4f8e97658e68b57d01b4c86659e08b5",
+  "license": "CC-BY-4.0",
+  "candidates": [
+    {
+      "id": "barrier_fence_metal_a02",
+      "role": "equipment safety barrier",
+      "rootUsd": "simready_usd/sm_barrier_fence_metal_a02_01.usd",
+      "packageHash": "c0a4b245ae0ed59e42790195b839c330e563350219dac07e2177e5ebb1e8454d"
+    },
+    {
+      "id": "electrical_power_terminal_a01",
+      "role": "electrical terminal assembly",
+      "rootUsd": "simready_usd/sm_electrical_power_terminal_a01_01.usd",
+      "packageHash": "5c5ea987573f13bd0db38086be579e26001bcb1a83e2906b1e68f7d488f941d3"
+    }
+  ],
+  "unresolved": [
+    "Browser glTF conversion does not execute NVIDIA physics.",
+    "Sourced solar and inverter models are generic visual assets without OEM electrical/thermal parameters."
+  ],
+  "physicalBehaviorPriority": [
+    "solar output",
+    "geometric shading",
+    "inverter temperature"
+  ]
+}

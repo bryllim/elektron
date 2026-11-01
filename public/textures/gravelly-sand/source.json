@@ -1,0 +1,23 @@
+{
+  "asset": "Gravelly Sand",
+  "source": "https://polyhaven.com/a/gravelly_sand",
+  "license": "CC0-1.0",
+  "downloaded": "2026-10-30",
+  "files": {
+    "diffuse": {
+      "size": 1062525,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/gravelly_sand/gravelly_sand_diff_1k.jpg",
+      "md5": "16b7593a26ce1bd43f1d95e61dc25f05"
+    },
+    "normal": {
+      "size": 1387739,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/gravelly_sand/gravelly_sand_nor_gl_1k.jpg",
+      "md5": "92053a3e135c938def2dc974c76e3763"
+    },
+    "roughness": {
+      "size": 419895,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/gravelly_sand/gravelly_sand_rough_1k.jpg",
+      "md5": "1152ab34b85ec42a5d4d6c8ed2c1100b"
+    }
+  }
+}

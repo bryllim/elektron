@@ -1,0 +1,42 @@
+[
+  {
+    "url": "https://www.innerscene.com/api/library/wall-inverter-original-mep-cad-819279d7/download",
+    "path": "simulation/assets/innerscene/wall-inverter.step",
+    "sha256": "e165131d86fd4044e2628e7422019186885114424af48771a68877cba8f3523c"
+  },
+  {
+    "url": "https://www.innerscene.com/api/library/pad-mount-transformer-original-mep-cad-97ec95a3/download",
+    "path": "simulation/assets/innerscene/transformer.step",
+    "sha256": "8e31785671306a3d95cd175e3d61a5da879626eedaa97add7903d8cf519b3f79"
+  },
+  {
+    "url": "https://www.innerscene.com/api/library/solar-panel-compact-original-mep-cad-9beeba1e/download",
+    "path": "simulation/assets/innerscene/solar-panel.step",
+    "sha256": "c2180495d12d80837c6b9ee5fd8d1ddc29b5b67595726095d6b6d890e4770821"
+  },
+  {
+    "url": "https://www.innerscene.com/api/library/switchboard-original-mep-cad-15071089/download",
+    "path": "simulation/assets/innerscene/switchboard.step",
+    "sha256": "0166f7ce96f77a3b5d663b4f3c78cbb5ec4cbeda5032afdc6337ca4cc9f0ee55"
+  },
+  {
+    "url": "https://www.innerscene.com/api/library/40-ft-standard-shipping-container-5f94ec90/download",
+    "path": "simulation/assets/innerscene/container.step",
+    "sha256": "59ab25c6f3b489675bd9cd44b6e61b4f75ed9d2cd936f6c244722fd14e72e0ad"
+  },
+  {
+    "url": "https://grab3d.com/dl/solar-panel/manifest.json",
+    "path": "simulation/assets/grab3d/manifest.json",
+    "sha256": "3031883fd4ce4e544ea40fc76ee5fcd760b54681ee9eca13a1c18304f9bbc409"
+  },
+  {
+    "url": "https://grab3d.com/dl/solar-panel/LICENSE.txt",
+    "path": "simulation/assets/grab3d/LICENSE.txt",
+    "sha256": "01908a56d6cada52704b20c5094c2aa16c9d8be6f124349c986764067abfd921"
+  },
+  {
+    "url": "https://grab3d.com/dl/solar-panel/solar-panel.glb",
+    "path": "simulation/assets/grab3d/solar-panel.glb",
+    "sha256": "f142d45c41cbe898988a1e2de7456773a639805b001f6c17fb3c035b38c88aea"
+  }
+]

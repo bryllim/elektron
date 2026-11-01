@@ -1,0 +1,35 @@
+{
+  "creator": "NVIDIA",
+  "license": "CC-BY-4.0",
+  "source": "https://huggingface.co/datasets/nvidia/simready-assets",
+  "revision": "4763fbfaa4f8e97658e68b57d01b4c86659e08b5",
+  "assets": [
+    {
+      "id": "barrier_fence_metal_a02",
+      "file": "barrier_fence_metal_a02.glb",
+      "triangles": 2316,
+      "meshes": 1,
+      "dimensionsMeters": [
+        1.229800045490265,
+        1.0717845320024502,
+        0.22999998927116394
+      ],
+      "bytes": 366444,
+      "sha256": "eedb2256b13e69b7fb845f357cdeaf7bb9210d4160c60a82628793deb5186bed"
+    },
+    {
+      "id": "electrical_power_terminal_a01",
+      "file": "electrical_power_terminal_a01.glb",
+      "triangles": 132887,
+      "meshes": 16,
+      "dimensionsMeters": [
+        1.520370900630951,
+        5.075706710160759,
+        0.5212122202016694
+      ],
+      "bytes": 5394172,
+      "sha256": "8c09b94405c0749e73a4db9c09332d3d1e78a9bb14976f59d16ce0c73e0012fc"
+    }
+  ],
+  "changes": "USD render meshes converted to grounded Y-up metres; PBR approximated; geometry simplified with 0.0005 relative error bound; 1K WebP textures; physics and MDL omitted."
+}

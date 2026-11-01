@@ -1,0 +1,66 @@
+{
+  "creator": "Innerscene Corp",
+  "license": "CC0-1.0",
+  "assets": [
+    {
+      "id": "solar-panel",
+      "dimensionsMeters": [
+        0.9998,
+        1.6996600000000002,
+        0.0539945
+      ],
+      "triangles": 800,
+      "sourceMeshes": 65,
+      "meshes": 5,
+      "sha256": "e141bc583b06cbb5a7d755d5eaf45f47a48df78cc19cfc16dc81ca67c417cf23"
+    },
+    {
+      "id": "wall-inverter",
+      "dimensionsMeters": [
+        0.44991000000000003,
+        0.6759322,
+        0.2429966
+      ],
+      "triangles": 2768,
+      "sourceMeshes": 26,
+      "meshes": 7,
+      "sha256": "43f07b292e3a7eebdc4cac321cc798f5437400ceb64138d92822dbff8c75027f"
+    },
+    {
+      "id": "transformer",
+      "dimensionsMeters": [
+        1.419988,
+        1.49985,
+        1.14977
+      ],
+      "triangles": 908,
+      "sourceMeshes": 35,
+      "meshes": 5,
+      "sha256": "730323231f475c7b7a70dfa0478a178fd4e053bf5f6aa538ceb91745e35c5d4e"
+    },
+    {
+      "id": "switchboard",
+      "dimensionsMeters": [
+        1.5998376,
+        2.0999952,
+        0.6444377
+      ],
+      "triangles": 2260,
+      "sourceMeshes": 69,
+      "meshes": 8,
+      "sha256": "bc80e5c7b693e49f6ecee86884f5374a25771fb32ee0cc23a5426e54b50967c7"
+    },
+    {
+      "id": "container",
+      "dimensionsMeters": [
+        12.192,
+        2.591,
+        2.438
+      ],
+      "triangles": 6388,
+      "sourceMeshes": 12,
+      "meshes": 4,
+      "sha256": "34761b767fc7d52c4c6b4644262c68dc1485ac1a34ebac9588b4daa5ab42d3a3"
+    }
+  ]
+}

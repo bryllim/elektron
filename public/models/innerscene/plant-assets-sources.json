@@ -1,0 +1,23 @@
+[
+  {
+    "name": "cooling-tower",
+    "source": "https://www.innerscene.com/tools/library/3d-parts/cooling-tower-005ae63b",
+    "download": "https://www.innerscene.com/api/library/cooling-tower-005ae63b/download",
+    "license": "CC0-1.0",
+    "sha256": "afc1da58562e26b0d0e35eea98fe44f76387afe099424749c0b633464722449f"
+  },
+  {
+    "name": "heat-exchanger",
+    "source": "https://www.innerscene.com/tools/library/3d-parts/shell-and-tube-heat-exchanger-69685a9a",
+    "download": "https://www.innerscene.com/api/library/shell-and-tube-heat-exchanger-69685a9a/download",
+    "license": "CC0-1.0",
+    "sha256": "43a0611324143c81e902e003271f3df417d7b4926c11f216e294630a8434f7d3"
+  },
+  {
+    "name": "wind-turbine",
+    "source": "https://www.innerscene.com/tools/library/3d-parts/wind-turbine-d67dce35",
+    "download": "https://www.innerscene.com/api/library/wind-turbine-d67dce35/download",
+    "license": "CC0-1.0",
+    "sha256": "bfbae851db2205425b1151d060dac29fc4c64f4238510989c1b270791625c645"
+  }
+]

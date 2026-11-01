@@ -1,0 +1,23 @@
+{
+  "asset": "forest_ground_04",
+  "source": "https://polyhaven.com/a/forest_ground_04",
+  "license": "CC0-1.0",
+  "downloaded": "2026-10-31",
+  "files": {
+    "diffuse": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/forest_ground_04/forest_ground_04_diff_1k.jpg",
+      "size": 1113899,
+      "md5": "6ad9df4d731a238299806f739a26af83"
+    },
+    "normal": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/forest_ground_04/forest_ground_04_nor_gl_1k.jpg",
+      "size": 1326812,
+      "md5": "a010a0802c2d9a930c6f00d3b1f196d2"
+    },
+    "roughness": {
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/forest_ground_04/forest_ground_04_rough_1k.jpg",
+      "size": 627507,
+      "md5": "b5c7ba5c16f00261e9a765d52cf7e0ac"
+    }
+  }
+}
