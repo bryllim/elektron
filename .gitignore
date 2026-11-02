@@ -24,3 +24,9 @@ __pycache__/
 *.p12
 *.pfx
 *.log
+/video/elektron-launch-v4/3d/out/frames/
+/video/elektron-launch-v4/3d/out/*.blend*
+/video/elektron-launch-v4/film/stills/
+/video/elektron-launch-v4/film/*.wav
+/video/elektron-launch-v4/film/video60.mp4
+/video/elektron-launch-v4/film/Elektron_Launch_v4*.mp4

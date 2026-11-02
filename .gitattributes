@@ -15,3 +15,5 @@
 **/environment-data.json filter=lfs diff=lfs merge=lfs -text
 **/textures.json filter=lfs diff=lfs merge=lfs -text
 **/avatars.json filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
