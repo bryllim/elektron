@@ -33,7 +33,7 @@ META_SAM_MODEL=sam-3.1
 META_BASE_URL=https://api.meta.ai/v1
 ```
 
-Keys are read server-side. `.env.local` is ignored by version control. No credential entry form, browser key storage or `NEXT_PUBLIC_` key is used. The server-controlled endpoint override is useful for contract testing; browser requests cannot supply arbitrary provider URLs or model IDs.
+The server key is read from `META_API_KEY`; `.env.local` is ignored by version control. Visitors can instead paste their own key in the guided tour: it is kept in that browser's localStorage, sent to Elektron's own API routes as an `x-meta-key` header with that visitor's requests only, used for that request, and never stored or logged on the server. No `NEXT_PUBLIC_` key is used. The server-controlled endpoint override is useful for contract testing; browser requests cannot supply arbitrary provider URLs or model IDs.
 
 ## Demonstration sequence
 

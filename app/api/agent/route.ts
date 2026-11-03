@@ -13,15 +13,16 @@ import {
   metaFailure,
   readJson,
   responseText,
+  withMetaKey,
 } from "@/lib/meta";
 export const runtime = "nodejs";
 export const maxDuration = 120;
-export async function GET() {
+async function handleGET() {
   return NextResponse.json(metaStatus(), {
     headers: { "Cache-Control": "no-store" },
   });
 }
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const started = Date.now();
   try {
     const parsed = agentRequestSchema.safeParse(await readJson(request));
@@ -160,4 +161,12 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
+}
+
+export function GET(request?: Request) {
+  return request ? withMetaKey(request, () => handleGET()) : handleGET();
+}
+
+export function POST(request: Request) {
+  return withMetaKey(request, () => handlePOST(request));
 }

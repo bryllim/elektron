@@ -5,9 +5,10 @@ import {
   metaFailure,
   readJson,
   responseText,
+  withMetaKey,
 } from "@/lib/meta";
 export const runtime = "nodejs";
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   try {
     const parsed = z
       .object({ profile: z.enum(["triage", "deep", "vision"]) })
@@ -50,4 +51,8 @@ export async function POST(request: Request) {
       { status: failure.status },
     );
   }
+}
+
+export function POST(request: Request) {
+  return withMetaKey(request, () => handlePOST(request));
 }

@@ -447,3 +447,4 @@
   .story-sponsors li { display: flex; justify-content: center; width: calc(50% - 18px); }
   .story-sponsors img { width: 106px; height: 24px; } .story-sponsors li:last-child img { width: 124px; }
 }
+.project-story .story-builtwith { display: inline-flex; align-items: center; gap: 8px; margin-top: 6px; opacity: 0.75; }

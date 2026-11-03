@@ -143,6 +143,8 @@ function Turbine({
   return (
     <group
       position={WIND_POSITIONS[index]}
+      onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = "pointer"; }}
+      onPointerOut={() => { document.body.style.cursor = "auto"; }}
       onClick={(e) => {
         if (e.delta > 5) return;
         e.stopPropagation();
@@ -386,6 +388,8 @@ function Scene(p: PlantSceneProps) {
             <GroundMaterial repeat={10} wet={wx.rain > 0} color="#555e61" />
           </mesh>
           <group
+            onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = "pointer"; }}
+            onPointerOut={() => { document.body.style.cursor = "auto"; }}
             onClick={(e) => {
               if (e.delta > 5) return;
               e.stopPropagation();
@@ -398,6 +402,8 @@ function Scene(p: PlantSceneProps) {
             />
           </group>
           <group
+            onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = "pointer"; }}
+            onPointerOut={() => { document.body.style.cursor = "auto"; }}
             onClick={(e) => {
               if (e.delta > 5) return;
               e.stopPropagation();
@@ -410,6 +416,8 @@ function Scene(p: PlantSceneProps) {
             />
           </group>
           <group
+            onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = "pointer"; }}
+            onPointerOut={() => { document.body.style.cursor = "auto"; }}
             onClick={(e) => {
               if (e.delta > 5) return;
               e.stopPropagation();

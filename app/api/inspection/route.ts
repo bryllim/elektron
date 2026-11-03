@@ -4,6 +4,7 @@ import {
   metaRespond,
   readJson,
   responseText,
+  withMetaKey,
 } from "@/lib/meta";
 import {
   inspectionSchema,
@@ -12,7 +13,7 @@ import {
 } from "@/lib/meta-inspection";
 export const runtime = "nodejs";
 export const maxDuration = 120;
-export async function POST(request: Request) {
+async function handlePOST(request: Request) {
   const started = Date.now();
   const signal = AbortSignal.any([
     request.signal,
@@ -101,4 +102,8 @@ export async function POST(request: Request) {
       { status: failure.status },
     );
   }
+}
+
+export function POST(request: Request) {
+  return withMetaKey(request, () => handlePOST(request));
 }

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { metaKeyHeaders } from "@/lib/visitor-key";
 import {
   Check,
   ImagePlus,
@@ -38,7 +39,7 @@ export default function MetaIntegration() {
   const generation = useRef(0);
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/agent", { signal: controller.signal })
+    fetch("/api/agent", { signal: controller.signal, headers: metaKeyHeaders() })
       .then((r) => r.json())
       .then(setStatus)
       .catch(() => {});
@@ -65,7 +66,7 @@ export default function MetaIntegration() {
     try {
       const response = await fetch("/api/meta/check", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...metaKeyHeaders() },
         body: JSON.stringify({ profile }),
         signal: controller.signal,
       });
@@ -129,7 +130,7 @@ export default function MetaIntegration() {
     try {
       const response = await fetch("/api/inspection", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...metaKeyHeaders() },
         body: JSON.stringify({ image, source, target }),
         signal: controller.signal,
       });

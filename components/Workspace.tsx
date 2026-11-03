@@ -1,12 +1,10 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
-import dynamic from "next/dynamic";
-const ModelLibrary = dynamic(() => import("./ModelLibrary"), {
-  ssr: false,
-  loading: () => <p>Loading asset library…</p>,
-});
 import {
   Zap,
+  MessageSquare,
+  PanelLeftOpen,
+  PanelLeftClose,
   LayoutDashboard,
   Box,
   ChartNoAxesCombined,
@@ -58,12 +56,12 @@ import MissionWorkspace from "./MissionWorkspace";
 import PlantWorkspace from "./PlantWorkspace";
 import SiteWorkspace, { View } from "./SiteWorkspace";
 import FloatingTimeline from "./FloatingTimeline";
-import OperationsGuide from "./OperationsGuide";
 import { DEMO_CASES } from "@/lib/operations";
 import AgentPanel, { AgentResult } from "./AgentPanel";
 import MetaIntegration from "./MetaIntegration";
 import SimulationModal from "./SimulationModal";
 import Modal from "./Modal";
+import { TourKeyStep, VisHello, VisWelcome, VisJob, VisCauses, VisAlert, VisPlant, VisNumbers, VisTools, VisEvidence, VisWhatIf, VisCases, VisLoop } from "./TourVisuals";
 import WorkspaceTour, { TourPill as P, type TourStep } from "./WorkspaceTour";
 import Chart from "./Chart";
 import {
@@ -124,8 +122,6 @@ export default function Workspace({
     } | null>(null),
     [modal, setModal] = useState<
       | "about"
-      | "guide"
-      | "models"
       | "meta"
       | "simulation"
       | "evidence"
@@ -147,10 +143,29 @@ export default function Workspace({
   const alarm = alarms(minute, scenario);
   const requestId = useRef(0);
   const agentToggle = useRef<HTMLButtonElement>(null);
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  useEffect(() => { setSidebarExpanded(localStorage.getItem("elektron-sidebar") !== "collapsed"); }, []);
   function closeAgent() {
     agentToggle.current?.focus({ preventScroll: true });
     setAgentOpen(false);
   }
+  // a tap outside the agent panel minimizes it; drags (orbiting the 3D twin), dialogs, the tour and the click that opened it don't count
+  const agentOpenedAt = useRef(0);
+  useEffect(() => {
+    if (!agentOpen || tourOpen || modal) return;
+    let down: { x: number; y: number } | null = null;
+    const onDown = (e: PointerEvent) => { down = { x: e.clientX, y: e.clientY }; };
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as Element | null;
+      const moved = down ? Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6 : false;
+      if (moved || !target?.isConnected || performance.now() - agentOpenedAt.current < 400) return;
+      if (target.closest("#elektron-agent, .agent-top, .ws-tour, .modal, .modal-backdrop, [role='dialog'], [role='listbox']")) return;
+      setAgentOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown, true);
+    document.addEventListener("click", onClick);
+    return () => { document.removeEventListener("pointerdown", onDown, true); document.removeEventListener("click", onClick); };
+  }, [agentOpen, tourOpen, modal]);
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
   }, [dark]);
@@ -191,8 +206,8 @@ export default function Workspace({
     return () => window.removeEventListener("keydown", key);
   }, []);
   useEffect(() => {
-    const forced = new URLSearchParams(location.search).get("tour") === "1";
-    if (forced || !localStorage.getItem("elektron-tour-seen")) setTourOpen(true);
+    // judges always start with the walkthrough; they can skip it from the first card
+    setTourOpen(true);
   }, []);
   function closeTour() {
     localStorage.setItem("elektron-tour-seen", "1");
@@ -229,6 +244,7 @@ export default function Workspace({
     setMobileMenu(false);
   }
   function openAgent(q?: string) {
+    agentOpenedAt.current = performance.now();
     setAgentOpen(true);
     if (q) {
       setPlaying(false);
@@ -270,22 +286,7 @@ export default function Workspace({
     setPlaying(false);
     setBranch(undefined);
   }
-  function launchCase(id: string) {
-    const item = DEMO_CASES.find((c) => c.id === id);
-    if (!item) return;
-    setSiteId(item.siteId);
-    setView(item.siteId ? "twin" : "overview");
-    setScenario(item.scenario);
-    setMinute(item.minute);
-    setPlaying(false);
-    setBranch(undefined);
-    setSelected(item.scenario === "telemetry" ? "INV-04" : "INV-07");
-    setOverlay("deviation");
-    setModal(null);
-    setAgentOpen(false);
-    setToast("Case loaded. Investigate the snapshot to verify the cause.");
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }
+
   function simulation() {
     setPlaying(false);
     setBranch(undefined);
@@ -313,49 +314,64 @@ export default function Workspace({
   }
   const pi = { size: 13, strokeWidth: 2.4 } as const;
   const tourSteps: TourStep[] = [
-    { label: "Welcome", title: "One power drop, investigated end to end",
+    { label: "Hello", screen: "overview", visual: <VisHello />, title: "A hello from Bryl and Engr. Howard", hideTitle: true, bare: true,
+      body: null,
+      enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
+    { label: "Welcome", screen: "overview", visual: <VisWelcome />, title: "Welcome to Elektron", hideTitle: true,
       body: <>
-        <span className="ws-tour-note"><P tone="k" icon={<Activity {...pi} />}>Simulated readings</P> The fleet you are about to see is a simulation modeled closely on the solar, wind and geothermal plants we work with, alongside electrical engineers, in the Philippines. Names and identities are replaced and no live plant is connected, but the equipment, readings and failure patterns mirror what we deal with in real operations.</span>
-        When a plant&apos;s output <P tone="o" icon={<TrendingDown {...pi} />}>drops</P>, an engineer has to work out why before sending a crew. A <P tone="o" icon={<ZapOff {...pi} />}>failing inverter</P>, a <P tone="b" icon={<CloudRain {...pi} />}>passing cloud</P> and a <P tone="n" icon={<WifiOff {...pi} />}>dead sensor</P> all look the same on a chart. This two-minute tour walks one case through Elektron.
+        <span className="ws-tour-note"><P tone="k" icon={<Activity {...pi} />}>Simulated readings</P> Quick heads-up: <strong>we&apos;ve used Elektron on real plants</strong>. This hackathon version is a prototype on Meta&apos;s models, and to keep plant data <P tone="k" icon={<Lock {...pi} />}>confidential</P>, <strong>what you&apos;ll see here is a simulated recreation.</strong> The plants are based on real <P tone="o" icon={<Sun {...pi} />}>solar</P>, <P tone="b" icon={<Wind {...pi} />}>wind</P> and <P tone="r" icon={<Flame {...pi} />}>geothermal</P> sites we work with in the <P tone="g" icon={<MapPin {...pi} />}>Philippines</P>, with the names changed, and nothing here is connected to a real plant.</span>
+        This takes about <P tone="n" icon={<Clock3 {...pi} />}>two minutes</P>, and you <strong>don&apos;t need to know anything about power plants</strong>. We&apos;ll walk you through it.
       </>,
       enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
-    { label: "Fleet", target: ".attention-banner", title: "The alert",
-      body: <>Eight plants across <P tone="g" icon={<MapPin {...pi} />}>Luzon, Visayas and Mindanao</P> run on one clock. <P tone="o" icon={<TriangleAlert {...pi} />}>Silangan Solar</P> is flagged: one of its inverters is producing far less than the weather says it should.</>,
+    { label: "Live AI", screen: "overview", title: "Want Muse to answer live?",
+      body: <>
+        Paste a <P tone="b">Meta Model API key</P> and Elektron&apos;s questions go to <strong>Meta&apos;s Muse models for real</strong>. No key? No problem: <strong>everything still works on simulated data</strong> with a scripted agent.
+        <TourKeyStep />
+      </>,
+      hideActions: true,
       enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
-    { label: "3D twin", target: ".mission-scene", title: "Go to the plant, in 3D",
-      body: <>Silangan Solar opens as a <P tone="b" icon={<BoxIcon {...pi} />}>live 3D twin</P> built from <P tone="nv">NVIDIA SimReady</P> and other sourced models. The deviation overlay colors equipment by its gap from weather-adjusted output; <P tone="o" icon={<Zap {...pi} />}>INV-07</P> stands out.</>,
+    { label: "Picture this", screen: "overview", visual: <VisJob />, title: "Picture this",
+      body: <>You look after a handful of power plants. One afternoon, one of them starts making <P tone="o" icon={<TrendingDown {...pi} />}>less power</P> than it should. Before you send a crew on a three-hour drive, you&apos;d really like to <strong>know why</strong>.</>,
+      enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
+    { label: "The tricky part", screen: "overview", visual: <VisCauses />, title: "Here's the tricky part",
+      body: <>On a chart, a <P tone="o" icon={<ZapOff {...pi} />}>broken inverter</P>, a <P tone="b" icon={<CloudRain {...pi} />}>passing cloud</P> and a <P tone="n" icon={<WifiOff {...pi} />}>sensor that went quiet</P> look <strong>exactly the same</strong>. Guess wrong, and the crew drives all that way <strong>for nothing</strong>. We&apos;ve been there.</>,
+      enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
+    { label: "The alert", screen: "overview", visual: <VisAlert />, target: ".attention-banner", title: "Here's one happening right now",
+      body: <>Elektron keeps an eye on <strong>eight plants</strong> across the Philippines, and it just flagged <P tone="o" icon={<TriangleAlert {...pi} />}>Silangan Solar</P>. One of its inverters is making <strong>far less than today&apos;s sunshine should allow</strong>.</>,
+      enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
+    { label: "The plant", screen: "twin", visual: <VisPlant />, target: ".mission-scene", title: "Let's take a look",
+      body: <>Here&apos;s Silangan Solar in 3D, built with <P tone="nv">NVIDIA SimReady</P> assets. Equipment that&apos;s <strong>falling behind lights up</strong>, and inverter <P tone="o">INV-07</P> is the one <strong>sticking out</strong>.</>,
       enter: () => { tourTwin(); setAgentOpen(false); } },
-    { label: "Evidence", target: ".asset-panel", title: "Read the numbers, not a guess",
-      body: <>INV-07 makes <P tone="r" icon={<TrendingDown {...pi} />}>322 kW</P> against <P tone="n">699 kW</P> expected, runs at <P tone="r" icon={<Thermometer {...pi} />}>74.3 °C</P> inside, and the controller logged a <P tone="o" icon={<Flame {...pi} />}>thermal derating</P> event. Every number comes from the <P tone="k">deterministic engine</P>, not a language model.</>,
+    { label: "The numbers", screen: "twin", visual: <VisNumbers />, target: ".asset-panel", title: "Something's off",
+      body: <>INV-07 is making <P tone="r" icon={<TrendingDown {...pi} />}>322 kW</P> when it should be closer to <P tone="n">699 kW</P>. It&apos;s also running hot, at <P tone="r" icon={<Thermometer {...pi} />}>74.3 °C</P>. Suspicious, but <strong>is the heat really the cause?</strong></>,
       enter: () => { tourTwin(); setAgentOpen(false); } },
-    { label: "Muse", target: "#elektron-agent", title: "Ask Muse why",
-      body: <><P tone="b">Muse</P> investigates like an engineer: read-only tools compare the <P tone="b" icon={<Users {...pi} />}>neighbors</P>, check the <P tone="o" icon={<Sun {...pi} />}>weather</P> and read the <P tone="g" icon={<FileText {...pi} />}>controller log</P>, then explain the cause. Without a Meta API key this runs a clearly labeled <P tone="n">scripted agent</P> over the same tools.</>,
+    { label: "Ask why", screen: "twin", visual: <VisTools />, target: "#elektron-agent", title: "So we ask Elektron",
+      body: <>Elektron uses <P tone="b">Muse</P>, Meta&apos;s AI model, to <strong>do the legwork an engineer would</strong>: compare INV-07 with its <P tone="b" icon={<Users {...pi} />}>neighbors</P>, check the <P tone="o" icon={<Sun {...pi} />}>weather</P>, and dig through the <P tone="g" icon={<FileText {...pi} />}>alarm log</P>.</>,
       enter: () => { tourTwin(); openAgent("Why is INV-07 underperforming?"); } },
-    { label: "Citations", target: "#elektron-agent .evidence-cards", title: "Every claim links to its evidence",
-      body: <>The answer cites <P tone="b" icon={<Link2 {...pi} />}>EV-001</P> and friends. Click any ID to open the exact tool result behind the sentence. The model explains; the <P tone="k">engine owns the numbers</P>; the operator owns the decision.</>,
+    { label: "The answer", screen: "twin", visual: <VisEvidence />, target: "#elektron-agent .evidence-cards", title: "And it shows its work",
+      body: <><strong>The verdict:</strong> the inverter got too hot and turned itself down, while the weather and its neighbors are fine. <strong>Don&apos;t just take its word for it.</strong> Click <P tone="b" icon={<Link2 {...pi} />}>EV-001</P> to see the exact data behind it.</>,
       enter: () => setAgentOpen(true) },
-    { label: "What-if", target: ".modal", title: "Test the fix before anyone drives out",
-      body: <>Run the fix on a <P tone="k" icon={<Copy {...pi} />}>copy</P> of the plant first. A <P tone="o">30-min</P> cooling outage on INV-07 costs <P tone="r" icon={<TrendingDown {...pi} />}>0.156 MWh</P> against the baseline, known before dispatch. Live data stays <P tone="g" icon={<Lock {...pi} />}>untouched</P>.</>,
+    { label: "Test the fix", screen: "whatif", visual: <VisWhatIf />, target: ".modal", title: "Try the fix before the drive",
+      body: <><strong>Before anyone gets in the truck</strong>, try the fix on a <P tone="k" icon={<Copy {...pi} />}>copy</P> of the plant. Letting INV-07 cool down for 30 minutes costs <P tone="r">0.156 MWh</P>, and <strong>the real plant stays untouched</strong>.</>,
       enter: () => { setAgentOpen(false); tourCase(); setBranch({ kind: "outage", assetId: "INV-07", duration: 30, reduction: 100 }); setModal("simulation"); } },
-    { label: "Other cases", target: ".playbook-toggle:not(.tour-toggle)", title: "Not every drop is a fault",
-      body: <>The Playbook loads the other cases: <P tone="b" icon={<CloudRain {...pi} />}>rain</P> that lowers output with <P tone="g" icon={<Check {...pi} />}>no fault</P>, a <P tone="n" icon={<WifiOff {...pi} />}>quiet sensor</P> shown as unknown, not zero, and a <P tone="r" icon={<Wind {...pi} />}>typhoon</P> replayed across the fleet to rank which sites get hit hardest.</>,
+    { label: "More cases", screen: "twin", visual: <VisCases />, target: ".scenario-picker", title: "Not every dip is a problem",
+      body: <>Want to see Elektron <strong>catch a false alarm</strong>? Pick a different situation here: <P tone="b" icon={<CloudRain {...pi} />}>rain</P>, a <P tone="n" icon={<WifiOff {...pi} />}>quiet sensor</P>, or a full-blown <P tone="r">typhoon</P>.</>,
       enter: () => setModal(null) },
-    { label: "Done", title: "Find the cause. Test the fix. Hand it over.",
-      body: <>That is Elektron: <P tone="b">evidence-backed</P> investigation with Muse, a <P tone="b" icon={<BoxIcon {...pi} />}>3D twin</P> to see it on site, and a <P tone="k">what-if</P> before dispatch. Explore freely, or replay from <P tone="g" icon={<Compass {...pi} />}>Guided tour</P> in the top bar.</>,
+    { label: "Done", screen: "twin", visual: <VisLoop />, title: "You're all set",
+      body: <>That&apos;s the whole idea: <strong>spot the dip, see it in 3D, ask why, check the evidence, test the fix.</strong> Have a look around, and replay this anytime from <P tone="g">Guided tour</P> up top.</>,
       enter: () => setModal(null) },
   ];
   return (
     <div
-      className={`app-shell ${agentOpen ? "with-agent" : ""} ${timelineMinimized ? "timeline-minimized" : ""}`}
+      className={`app-shell ${sidebarExpanded ? "sidebar-expanded" : ""} ${agentOpen ? "with-agent" : ""} ${timelineMinimized ? "timeline-minimized" : ""}`}
     >
       <aside className={`sidebar ${mobileMenu ? "mobile-open" : ""}`}>
         <a className="brand" href="/" aria-label="Elektron home">
-          <span className="brand-icon">
-            <Zap size={20} fill="currentColor" strokeWidth={1.5} />
+          <span className="brand-icon brand-logo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/story/v4/elektron-icon.png" alt="" />
           </span>
-          <span>
-            elektron<span className="brand-dot">.</span>
-          </span>
+          <span className="brand-word">ELEKTRON</span>
         </a>
         <button
           aria-label="Hiraya Renewables company selector"
@@ -427,27 +443,18 @@ export default function Workspace({
           </button>
         </div>
         <div className="sidebar-bottom">
-          <div className="sidebar-agent">
-            <h3>
-              Less searching.
-              <br />
-              More understanding.
-            </h3>
-            <p>
-              Your fleet has a story.
-              <br />
-              Let Elektron connect the dots.
-            </p>
-            <button onClick={() => openAgent()}>
-              Ask Elektron Agent <ArrowUpRight size={14} />
-            </button>
-          </div>
           <button
-            className="help-button"
-            onClick={() => setModal("models")}
-            title="Sourced 3D asset library"
+            className="help-button sidebar-toggle"
+            onClick={() => {
+              const next = !sidebarExpanded;
+              localStorage.setItem("elektron-sidebar", next ? "expanded" : "collapsed");
+              setSidebarExpanded(next);
+            }}
+            aria-pressed={sidebarExpanded}
+            title={sidebarExpanded ? "Collapse sidebar" : "Expand sidebar"}
           >
-            <Box size={17} /> 3D asset library <ArrowUpRight size={13} />
+            {sidebarExpanded ? <PanelLeftClose size={17} /> : <PanelLeftOpen size={17} />}
+            <span>{sidebarExpanded ? "Collapse" : "Expand"}</span>
           </button>
           <button className="help-button" onClick={() => setModal("about")}>
             <HelpCircle size={17} /> About this workspace{" "}
@@ -498,23 +505,12 @@ export default function Workspace({
             )}
           </div>
           <div className="topbar-actions">
-            <span className="console-mode">
-              <span className="tiny-dot green" />
-              SIMULATED ENVIRONMENT
-            </span>
             <button
               className="playbook-toggle tour-toggle"
               onClick={() => setTourOpen(true)}
             >
               <Compass size={14} />
               <span>Guided tour</span>
-            </button>
-            <button
-              className="playbook-toggle"
-              onClick={() => setModal("guide")}
-            >
-              <FileText size={14} />
-              <span>Playbook</span>
             </button>
             <button
               className="search-button icon-button"
@@ -559,12 +555,13 @@ export default function Workspace({
             </button>
             <button
               ref={agentToggle}
-              className={`agent-toggle ${agentOpen ? "active" : ""}`}
+              className={`agent-top ${agentOpen ? "active" : ""}`}
               aria-expanded={agentOpen}
               aria-controls="elektron-agent"
-              onClick={() => (agentOpen ? closeAgent() : setAgentOpen(true))}
+              onClick={() => (agentOpen ? closeAgent() : openAgent())}
             >
-              <span>Agent</span>
+              <MessageSquare size={15} strokeWidth={2.2} />
+              <span>Ask Elektron</span>
             </button>
           </div>
         </header>
@@ -578,7 +575,6 @@ export default function Workspace({
               scenario={scenario}
               onSelect={openSite}
               onAgent={openAgent}
-              onCases={() => setModal("guide")}
               range={range}
               onScenario={changeWeather}
               onTime={(m) => {
@@ -793,11 +789,6 @@ export default function Workspace({
           {toast}
         </div>
       )}
-      {modal === "guide" && (
-        <Modal onClose={() => setModal(null)} title="Operations playbook" wide>
-          <OperationsGuide onLaunch={launchCase} />
-        </Modal>
-      )}
       {modal === "meta" && (
         <Modal
           onClose={() => setModal(null)}
@@ -816,27 +807,13 @@ export default function Workspace({
           />
         </Modal>
       )}
-      {modal === "models" && (
-        <Modal
-          onClose={() => setModal(null)}
-          title="Sourced 3D asset library"
-          wide
-        >
-          <ModelLibrary />
-        </Modal>
-      )}
       {modal === "about" && (
         <Modal onClose={() => setModal(null)} title="About Elektron">
           <div className="about-panel">
             <span className="brand-icon large">
               <Zap size={29} fill="currentColor" />
             </span>
-            <span className="eyebrow">BUILT FOR YOUR WORLD</span>
-            <h2>
-              Renewable energy
-              <br />
-              operations intelligence.
-            </h2>
+            <h2>About Elektron</h2>
             <p>
               Elektron connects fleet monitoring, an interactive 3D digital
               twin, and evidence-backed investigations in one operations
@@ -859,22 +836,25 @@ export default function Workspace({
                 <strong>Scripted demo agent</strong>
               </div>
               <div>
+                <span>Built with</span>
+                <strong>Muse Code</strong>
+              </div>
+              <div>
                 <span>3D assets</span>
                 <strong>NVIDIA · Poly Haven · Innerscene · Grab3D</strong>
               </div>
             </div>
             <p className="about-limits">
-              A simulated digital twin demonstration. No real facility
-              connection, formal engineering certification, or external
-              validation is claimed. Muse inference requires a server-side Meta
-              API key. NVIDIA SimReady geometry is converted for browser
+              We have used Elektron on real plants. This hackathon version is
+              a prototype rebuilt on Meta&apos;s models and, to keep plant data
+              confidential, it runs on a simulated recreation with no real
+              facility connected. No formal engineering certification is
+              claimed. Live Muse answers need a Meta API key, either on the
+              server or pasted in the guided tour. NVIDIA SimReady geometry is converted for browser
               viewing; no NVIDIA physics runtime is connected. Solar, shading
               and inverter-temperature behavior require separate simulation
               models.
             </p>
-            <button className="button full" onClick={() => setModal("models")}>
-              <Box size={15} /> Inspect 3D assets & credits
-            </button>
             <button
               className="button primary full"
               onClick={() => {

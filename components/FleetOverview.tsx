@@ -59,9 +59,7 @@ export default function FleetOverview({
   range,
   onScenario,
   onTime,
-  onCases,
 }: {
-  onCases: () => void;
   minute: number;
   scenario: Scenario;
   onSelect: (id: string) => void;
@@ -100,10 +98,6 @@ export default function FleetOverview({
     <>
       <div className="page-heading">
         <div>
-          <div className="eyebrow">
-            <span className="tiny-dot green" /> SITUATIONAL OVERVIEW /
-            PHILIPPINES
-          </div>
           <h1>Fleet operations</h1>
           <p>136 MW generation · 8 MW storage · 3 island groups</p>
         </div>
@@ -129,7 +123,6 @@ export default function FleetOverview({
         minute={minute}
         scenario={scenario}
         onAgent={onAgent}
-        onCases={onCases}
       />
       <div className="stat-row">
         <Stat

@@ -17,7 +17,7 @@ import "./story.css";
 export const metadata: Metadata = {
   title: "Elektron — Find the cause. Test the fix.",
   description:
-    "Built alongside electrical engineers and power plants in the Philippines, Elektron investigates renewable power drops with Muse, evidence and a 3D digital twin. Official entry, Meta Global AI Developer Hackathon. Fictional fleet, simulated operations.",
+    "Built alongside electrical engineers and power plants in the Philippines, Elektron investigates renewable power drops with Muse, evidence and a 3D digital twin. Official entry, Meta Global AI Developer Hackathon. Built with Muse Code. Fictional fleet, simulated operations.",
 };
 
 type Tone = "o" | "b" | "g" | "r" | "n" | "k" | "nv";
@@ -302,6 +302,7 @@ export default function Page() {
         <section className="story-closing story-glow" data-scroll="glow">
           <div className="story-endmark" data-reveal="zoom" data-scroll="grow"><ElektronMark size={96} /><span>Elektron</span></div>
           <p className="story-endline" data-reveal="up"><K>Official entry · Meta Global AI Developer Hackathon</K></p>
+          <p className="story-endline story-builtwith" data-reveal="up"><MuseMark size={16} /> Built with Muse Code</p>
           <div className="story-closing-actions" data-reveal="up">
             <a href="/workspace?case=derating" className="story-primary">Investigate the power drop <ArrowUpRight size={16} strokeWidth={1.5} /></a>
             <a href="/workspace" className="story-text-link">Explore the full workspace <ArrowRight size={16} strokeWidth={1.5} /></a>

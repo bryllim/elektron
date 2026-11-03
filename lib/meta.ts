@@ -1,7 +1,15 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 /** Server-only transport. Credentials and endpoint overrides never enter client bundles. */
+/** A visitor's own Meta key, sent with a request as `x-meta-key` and scoped to that request only. */
+const requestKey = new AsyncLocalStorage<string>();
+/** Run a route handler with the visitor's key (if any) taking precedence over the server's META_API_KEY. */
+export function withMetaKey<T>(request: Request, handler: () => T): T {
+  const key = request.headers.get("x-meta-key")?.trim() ?? "";
+  return /^[\x21-\x7e]{8,512}$/.test(key) ? requestKey.run(key, handler) : handler();
+}
 export function metaConfig() {
   return {
-    key: process.env.META_API_KEY?.trim() || "",
+    key: requestKey.getStore() || process.env.META_API_KEY?.trim() || "",
     baseUrl: (process.env.META_BASE_URL || "https://api.meta.ai/v1").replace(
       /\/$/,
       "",

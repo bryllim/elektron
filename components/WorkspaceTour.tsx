@@ -1,15 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, createContext } from "react";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
+
+/** Lets a step's own content move the tour (e.g. a step with custom buttons). */
+export const TourNav = createContext<{ next: () => void; prev: () => void; close: () => void }>({ next: () => {}, prev: () => {}, close: () => {} });
 
 export type TourStep = {
   title: string;
   body: ReactNode;
+  /** optional illustration shown above the title */
+  visual?: ReactNode;
   /** CSS selector to spotlight; omitted = centered card */
   target?: string;
   /** puts the workspace into the state this step talks about */
   enter?: () => void;
+  /** which screen the step shows; moving to a different screen fades through black */
+  screen?: string;
+  /** keep the title for screen readers only (the illustration carries the step) */
+  hideTitle?: boolean;
+  /** render without the card background, directly over the dimmed workspace */
+  bare?: boolean;
+  /** the step renders its own buttons (via TourNav) instead of the standard Skip / Back / Next row */
+  hideActions?: boolean;
   /** a shorter label shown in the progress row */
   label: string;
 };
@@ -56,8 +69,22 @@ export default function WorkspaceTour({ steps, open, onClose }: { steps: TourSte
     if (card.current) setCardSize({ w: card.current.offsetWidth, h: card.current.offsetHeight });
   }, [index, open, box === null]);
 
-  const next = useCallback(() => (index < steps.length - 1 ? setIndex(index + 1) : onClose()), [index, steps.length, onClose]);
-  const prev = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
+  const [fading, setFading] = useState(false);
+  const fadeTimers = useRef<number[]>([]);
+  useEffect(() => () => fadeTimers.current.forEach(clearTimeout), []);
+  const go = useCallback((to: number) => {
+    if (fading || to === index) return;
+    const from = steps[index]?.screen, dest = steps[to]?.screen;
+    if (!from || !dest || from === dest) { setIndex(to); return; }
+    // fade to black, switch the workspace while hidden, then fade back in once it has settled
+    setFading(true);
+    fadeTimers.current.push(window.setTimeout(() => {
+      setIndex(to);
+      fadeTimers.current.push(window.setTimeout(() => setFading(false), 450));
+    }, 340));
+  }, [fading, index, steps]);
+  const next = useCallback(() => (index < steps.length - 1 ? go(index + 1) : onClose()), [index, steps.length, onClose, go]);
+  const prev = useCallback(() => go(Math.max(0, index - 1)), [index, go]);
   useEffect(() => {
     if (!open) return;
     const key = (e: KeyboardEvent) => {
@@ -72,6 +99,7 @@ export default function WorkspaceTour({ steps, open, onClose }: { steps: TourSte
   useEffect(() => { if (open) card.current?.focus({ preventScroll: true }); }, [open, index]);
 
   if (!open || !step) return null;
+  const nav = { next, prev, close: onClose };
   const pad = 10, gap = 18, vw = typeof window === "undefined" ? 1440 : innerWidth, vh = typeof window === "undefined" ? 900 : innerHeight;
   const spot = step.target && box ? { top: box.top - pad, left: box.left - pad, width: box.width + pad * 2, height: box.height + pad * 2 } : null;
   // place the card beside the spotlight where it fits: right, left, below, above, else inside the bottom edge
@@ -88,21 +116,25 @@ export default function WorkspaceTour({ steps, open, onClose }: { steps: TourSte
   return (
     <div className="ws-tour" role="dialog" aria-modal="false" aria-labelledby="ws-tour-title" aria-describedby="ws-tour-body">
       {spot ? <div className="ws-tour-spot" style={spot} /> : <div className="ws-tour-dim" />}
-      <div ref={card} tabIndex={-1} className={`ws-tour-card ${spot ? "" : "centered"}`} style={pos} key={index}>
+      <div className={`ws-tour-fade ${fading ? "on" : ""}`} aria-hidden="true" />
+      <TourNav.Provider value={nav}>
+      <div ref={card} tabIndex={-1} className={`ws-tour-card ${spot ? "" : "centered"} ${step.bare ? "bare" : ""}`} style={pos} key={index}>
         <div className="ws-tour-meta">
           <span className="mono">{String(index + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")} · {step.label}</span>
           <button className="ws-tour-close" aria-label="End the guided tour" onClick={onClose}><X size={15} /></button>
         </div>
-        <h2 id="ws-tour-title">{step.title}</h2>
-        <div id="ws-tour-body" className="ws-tour-body">{step.body}</div>
+        {step.visual && <div className="ws-tour-visual">{step.visual}</div>}
+        <h2 id="ws-tour-title" className={step.hideTitle ? "sr-only" : undefined}>{step.title}</h2>
+        {step.body ? <div id="ws-tour-body" className="ws-tour-body">{step.body}</div> : null}
         <div className="ws-tour-progress" aria-hidden="true">{steps.map((_, i) => <i key={i} className={i === index ? "on" : i < index ? "done" : ""} />)}</div>
-        <div className="ws-tour-actions">
+        {!step.hideActions && <div className="ws-tour-actions">
           <button className="ws-tour-skip" onClick={onClose}>{index === steps.length - 1 ? "Close" : "Skip tour"}</button>
           <span />
           {index > 0 && <button className="ws-tour-back" onClick={prev} aria-label="Previous step"><ArrowLeft size={15} /></button>}
           <button className="ws-tour-next" onClick={next}>{index === steps.length - 1 ? "Explore on your own" : index === 0 ? "Start the tour" : "Next"} <ArrowRight size={15} /></button>
-        </div>
+        </div>}
       </div>
+      </TourNav.Provider>
     </div>
   );
 }

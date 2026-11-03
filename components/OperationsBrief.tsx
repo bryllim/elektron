@@ -14,15 +14,14 @@ export default function OperationsBrief({
   minute,
   scenario,
   onAgent,
-  onCases,
 }: {
   minute: number;
   scenario: Scenario;
   onAgent: (q: string) => void;
-  onCases: () => void;
 }) {
   const brief = operationalBrief(minute, scenario);
   const lead = brief.findings[0];
+  const flagged = brief.findings.filter((f) => f.category !== "normal").length;
   return (
     <section className="operations-brief" aria-label="Operations brief">
       <div className="brief-purpose">
@@ -31,17 +30,10 @@ export default function OperationsBrief({
           <span>{timeLabel(minute)} PHT</span>
         </span>
         <h2>
-          Find the cause.
-          <br />
-          <span>Test the response.</span>
+          {flagged === 0
+            ? "All sites within expected output"
+            : `${flagged} ${flagged === 1 ? "finding needs" : "findings need"} review`}
         </h2>
-        <p>
-          Separate equipment faults from weather losses and missing
-          signals—before planning an intervention.
-        </p>
-        <button onClick={onCases}>
-          Explore operational cases <ArrowRight size={14} />
-        </button>
       </div>
       <div className="brief-priority">
         <div className="brief-priority-heading">

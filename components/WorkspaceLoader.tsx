@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 
-/** Everything the workspace's 3D scenes and map request on first view. */
+/** Everything the workspace's 3D scenes and map request on first view, grouped for the loader's status rows. */
 const MODELS = [
   "/models/innerscene/wall-inverter-parts.glb", "/models/innerscene/wall-inverter.glb", "/models/innerscene/wind-turbine.glb",
   "/models/innerscene/transformer.glb", "/models/innerscene/switchboard.glb", "/models/innerscene/heat-exchanger.glb",
@@ -13,8 +13,12 @@ const MODELS = [
   "/models/polyhaven/island_tree_01.glb", "/models/polyhaven/fern_02.glb",
 ];
 const TEXTURES = ["gravelly-sand", "forest-ground"].flatMap((folder) => ["diffuse", "normal", "roughness"].map((map) => `/textures/${folder}/${map}.jpg`));
-const OTHER = ["/environments/studio_small_09_1k.hdr", "/philippines.json"];
-const FILES = [...MODELS, ...TEXTURES, ...OTHER];
+const GROUPS = [
+  { id: "models", label: "3D equipment", files: MODELS },
+  { id: "textures", label: "Terrain textures", files: TEXTURES },
+  { id: "light", label: "Scene lighting", files: ["/environments/studio_small_09_1k.hdr"] },
+  { id: "map", label: "Fleet map data", files: ["/philippines.json"] },
+] as const;
 const CODE = [() => import("./TwinViewer"), () => import("./PlantScene")];
 
 /** Download one file into the HTTP cache, reporting bytes as they stream in. */
@@ -33,28 +37,30 @@ async function fetchWithProgress(url: string, onBytes: (loaded: number, total: n
   onBytes(loaded, Math.max(total, loaded));
 }
 
-/** Holds the workspace back until its 3D models, textures, environment map, map data and viewer code are loaded. */
+/** Holds the workspace back until its 3D models, textures, environment map, map data and viewer code are loaded.
+ * Presented as a segmented, HUD-style boot sequence. */
 export default function WorkspaceLoader({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState(0);
-  const [label, setLabel] = useState("Preparing the digital twin");
+  const [counts, setCounts] = useState<Record<string, number>>({});
   const [ready, setReady] = useState(false);
   const [gone, setGone] = useState(false);
   useEffect(() => {
     let cancelled = false;
     const loaded = new Map<string, number>(), totals = new Map<string, number>();
     let done = 0;
-    const steps = FILES.length + CODE.length;
+    const steps = GROUPS.reduce((n, g) => n + g.files.length, 0) + CODE.length;
     const update = () => {
       const bytes = [...loaded.values()].reduce((a, b) => a + b, 0), total = [...totals.values()].reduce((a, b) => a + b, 0);
-      // bytes for the files we know the size of, file count for the rest; never go backwards
       const value = Math.min(0.99, 0.15 * (done / steps) + 0.85 * (total ? bytes / total : 0));
-      if (!cancelled) setProgress((p) => Math.max(p, value));
+      if (cancelled) return;
+      setProgress((p) => Math.max(p, value));
     };
+    const bump = (id: string) => { done++; if (!cancelled) setCounts((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 })); update(); };
     const started = performance.now();
     const work = [
-      ...FILES.map((url) => fetchWithProgress(url, (l, t) => { loaded.set(url, l); totals.set(url, t); update(); })
-        .catch(() => {}).finally(() => { done++; update(); if (!cancelled) setLabel(url.endsWith(".glb") ? "Loading 3D equipment" : url.endsWith(".hdr") ? "Lighting the scene" : "Loading plant data"); })),
-      ...CODE.map((load) => load().catch(() => {}).finally(() => { done++; update(); })),
+      ...GROUPS.flatMap((group) => group.files.map((url) => fetchWithProgress(url, (l, t) => { loaded.set(url, l); totals.set(url, t); update(); })
+        .catch(() => {}).finally(() => bump(group.id)))),
+      ...CODE.map((load) => load().catch(() => {}).finally(() => bump("code"))),
     ];
     // a slow network never strands judges behind the loader
     const safety = setTimeout(() => !cancelled && setReady(true), 45000);
@@ -62,28 +68,29 @@ export default function WorkspaceLoader({ children }: { children: ReactNode }) {
       // parse into drei's caches so the scenes mount without a second wait
       MODELS.forEach((url) => useGLTF.preload(url));
       useTexture.preload(TEXTURES);
-      const wait = Math.max(0, 700 - (performance.now() - started));
-      setTimeout(() => { if (!cancelled) { setProgress(1); setLabel("Ready"); setReady(true); } }, wait);
+      const wait = Math.max(0, 900 - (performance.now() - started));
+      setTimeout(() => { if (!cancelled) { setProgress(1); setReady(true); } }, wait);
     });
     return () => { cancelled = true; clearTimeout(safety); };
   }, []);
   useEffect(() => {
     if (!ready) return;
-    const t = setTimeout(() => setGone(true), 650);
+    const t = setTimeout(() => setGone(true), 900);
     return () => clearTimeout(t);
   }, [ready]);
+  const current = GROUPS.find((g) => (counts[g.id] ?? 0) < g.files.length);
+  const status = ready ? "Ready" : current ? `Loading ${current.label.toLowerCase()}` : "Preparing the twin viewer";
   return (
     <>
       {ready && children}
       {!gone && (
         <div className={`ws-loader ${ready ? "is-done" : ""}`} role="progressbar" aria-label="Loading the Elektron workspace" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}>
-          <div className="ws-loader-card">
+          <div className="ws-load">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/story/v4/elektron-icon.png" alt="" width={72} height={72} />
+            <img src="/story/v4/elektron-icon.png" alt="" width={52} height={52} />
             <strong>ELEKTRON</strong>
-            <span>{label}</span>
-            <div className="ws-loader-bar"><i style={{ width: `${Math.max(3, progress * 100)}%` }} /></div>
-            <small className="mono">{Math.round(progress * 100)}% · fictional fleet · simulated operations</small>
+            <div className="ws-load-bar"><i style={{ transform: `scaleX(${Math.max(0.02, progress)})` }} /></div>
+            <div className="ws-load-meta"><span>{status}</span><span>{Math.round(progress * 100)}%</span></div>
           </div>
         </div>
       )}

@@ -1,6 +1,12 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { META_KEY_EVENT, metaKeyHeaders } from "@/lib/visitor-key";
 import {
+  ChevronDown,
+  Activity,
+  TrendingDown,
+  CloudLightning,
+  Zap,
   X,
   ArrowUp,
   ArrowUpRight,
@@ -37,19 +43,10 @@ type Message = {
   cancelled?: boolean;
 };
 const examples = [
-  { label: "Check fleet status", question: "Which sites need attention?" },
-  {
-    label: "Explain an output drop",
-    question: "Why did Silangan’s output drop?",
-  },
-  {
-    label: "Review storm exposure",
-    question: "What is the typhoon exposure at this site?",
-  },
-  {
-    label: "Summarize today’s energy",
-    question: "How much energy did this site export today?",
-  },
+  { label: "Check fleet status", hint: "Sites that need attention", icon: Activity, question: "Which sites need attention?" },
+  { label: "Explain an output drop", hint: "Silangan Solar", icon: TrendingDown, question: "Why did Silangan’s output drop?" },
+  { label: "Review storm exposure", hint: "Typhoon track and sites", icon: CloudLightning, question: "What is the typhoon exposure at this site?" },
+  { label: "Summarize today’s energy", hint: "Export since midnight", icon: Zap, question: "How much energy did this site export today?" },
 ];
 export default function AgentPanel({
   open,
@@ -87,10 +84,14 @@ export default function AgentPanel({
   const latest = useRef({ minute, scenario, siteId, onStart, onResult });
   latest.current = { minute, scenario, siteId, onStart, onResult };
   useEffect(() => {
-    fetch("/api/agent")
-      .then((r) => r.json())
-      .then((d) => setMode(d.mode))
-      .catch(() => {});
+    const load = () =>
+      fetch("/api/agent", { headers: metaKeyHeaders() })
+        .then((r) => r.json())
+        .then((d) => setMode(d.mode))
+        .catch(() => {});
+    load();
+    window.addEventListener(META_KEY_EVENT, load);
+    return () => window.removeEventListener(META_KEY_EVENT, load);
   }, []);
   async function ask(q: string) {
     if (!q.trim()) return;
@@ -108,7 +109,7 @@ export default function AgentPanel({
     try {
       const res = await fetch("/api/agent", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...metaKeyHeaders() },
         body: JSON.stringify({
           question: q,
           minute: state.minute,
@@ -199,13 +200,13 @@ export default function AgentPanel({
       inert={!open}
     >
       <div className="agent-heading">
-        <div>
-          <h2>Elektron Agent</h2>
-          <p>
-            <span className="tiny-dot blue" />
-            {mode}
-          </p>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="agent-mark" src="/story/v4/elektron-icon.png" alt="" title={mode} />
+        <h2 className="agent-title">Elektron<span className="sr-only"> · {mode}</span></h2>
+        <span className="agent-heading-spacer" />
+        <button className="icon-button" onClick={onIntegrations} aria-label="Models & vision" title="Models & vision">
+          <ScanLine size={15} />
+        </button>
         {messages.length > 0 && (
           <button
             className="icon-button agent-new"
@@ -231,28 +232,19 @@ export default function AgentPanel({
           <X size={18} />
         </button>
       </div>
-      <div className="agent-snapshot">
-        <Clock3 size={12} /> Frozen snapshot · {timeLabel(minute)} PHT{" "}
-        <span>Simulated</span>
-      </div>
-      <div className="agent-model-controls">
-        <select
-          aria-label="Investigation model"
-          value={analysisMode}
-          disabled={busy}
-          onChange={(e) => setAnalysisMode(e.target.value as "triage" | "deep")}
-        >
-          <option value="triage">Quick · Muse Spark</option>
-          <option value="deep">Deep · Muse Wonder</option>
-        </select>
-        <button onClick={onIntegrations}>
-          <ScanLine size={13} /> Models & vision
-        </button>
-      </div>
       <div className={`agent-messages ${!messages.length ? "is-empty" : ""}`}>
         {!messages.length && (
           <div className="agent-welcome">
-            <h3>What should we do?</h3>
+            <div className="agent-intro">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="agent-intro-mark" src="/story/v4/elektron-icon.png" alt="" />
+              <p>
+                Hi, I&apos;m Elektron. Using Muse, I can compare output with what the weather allows, check neighboring
+                equipment, read alarm logs and test a what-if on a copy of the plant. Every finding links to
+                the data behind it.
+              </p>
+            </div>
+            <h3>Suggested</h3>
             <div
               className="agent-example-pills"
               role="group"
@@ -264,8 +256,9 @@ export default function AgentPanel({
                   disabled={busy}
                   onClick={() => ask(example.question)}
                 >
-                  {example.label}
-                  <ArrowUpRight size={12} />
+                  <span className="agent-example-icon"><example.icon size={22} strokeWidth={1.75} /></span>
+                  <strong>{example.label}</strong>
+                  <small>{example.hint}</small>
                 </button>
               ))}
             </div>
@@ -425,7 +418,18 @@ export default function AgentPanel({
           }}
         />
         <div>
-          <span>Evidence behind every finding</span>
+          <label className="agent-model-select">
+            <span className="sr-only">Investigation model</span>
+            <select
+              value={analysisMode}
+              disabled={busy}
+              onChange={(e) => setAnalysisMode(e.target.value as "triage" | "deep")}
+            >
+              <option value="triage">Muse Spark · Quick</option>
+              <option value="deep">Muse Wonder · Deep</option>
+            </select>
+            <ChevronDown size={12} />
+          </label>
           {busy ? (
             <button
               type="button"
@@ -447,15 +451,6 @@ export default function AgentPanel({
           )}
         </div>
       </form>
-      <p className="agent-disclaimer">
-        {mode.startsWith("Scripted")
-          ? "Deterministic demo · No live model inference"
-          : mode.includes("Ready")
-            ? "Meta configured · connection checked on investigation"
-            : "Powered by Muse · Meta Model API"}
-        <br />
-        Simulated findings. Engineering review required for real operations.
-      </p>
     </aside>
   );
 }
