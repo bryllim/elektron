@@ -1,6 +1,6 @@
 # Elektron
 
-**Elektron is an AI assistant for solar, wind and geothermal power plants. When a plant suddenly makes less electricity, it finds out why, shows you the proof, and tests the fix before anyone is sent out.**
+**Elektron is an AI assistant for solar, wind and geothermal power plants. When a plant suddenly makes less electricity, it finds out why, shows you the proof, and tests the fix before sending any personnel.**
 
 [![Watch the Elektron film on YouTube](public/story/readme-film.jpg)](https://www.youtube.com/watch?v=tz4qZuuWT8I)
 
@@ -42,7 +42,7 @@ Elektron does that detective work for you, and shows its reasoning.
 2. **It shows you where.** A 3D model of the plant highlights the exact piece of equipment.
 3. **It explains why.** You ask "why?", and Elektron uses Meta's **Muse** AI to check what an engineer would: the neighboring equipment, the weather and the alarm log.
 4. **It proves it.** Every claim links to the exact data behind it, so you can check it yourself.
-5. **It tests the fix first.** It tries the repair on a *copy* of the plant, so you know the cost before anyone gets in the truck.
+5. **It tests the fix first.** It tries the repair on a *copy* of the plant, so you know the cost before sending any personnel.
 6. **It hands over.** The answer, the evidence and the test go into a shift report for the next engineer.
 
 ### An example from the demo

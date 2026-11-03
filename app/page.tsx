@@ -79,10 +79,10 @@ export default function Page() {
         {/* Hero: the film's black-and-lime-glow title card */}
         <section className="story-hero story-glow" aria-labelledby="project-title" data-scroll="glow">
           <div className="story-hero-copy" data-reveal="up" data-stagger>
-            <h1 id="project-title" data-scroll="lift"><K>When output <Pill tone="o" icon={<TrendingDown {...I} />}>drops</Pill><span>know why before the truck rolls</span></K></h1>
-            <p className="story-hero-description"><K>A failing inverter, a passing cloud and a dead sensor look the same on a chart. <Pill tone="b" icon={<MuseMark size={16} color="currentColor" />}>Muse</Pill> checks the weather, the neighbors and the controller log, names the cause with evidence, and tests the fix on a copy of the plant.</K></p>
+            <h1 id="project-title" data-scroll="lift"><K>Plant output <Pill tone="o" icon={<TrendingDown {...I} />}>dropped</Pill>?<span>Know why before sending anyone</span></K></h1>
+            <p className="story-hero-description"><K>Elektron is an AI assistant for <Pill tone="o" icon={<Sun {...I} />}>solar</Pill>, <Pill tone="b" icon={<Wind {...I} />}>wind</Pill> and <Pill tone="r" icon={<Flame {...I} />}>geothermal</Pill> plants. It uses <Pill tone="b" icon={<MuseMark size={16} color="currentColor" />}>Muse</Pill> to find the <Pill tone="g" icon={<Check {...I} />}>real cause</Pill> and test the fix first.</K></p>
             <div className="story-hero-actions">
-              <a href="/workspace?case=derating" className="story-primary">Investigate the drop <ArrowRight size={16} strokeWidth={1.5} /></a>
+              <a href="/workspace?case=derating" className="story-primary">Try the demo <ArrowRight size={16} strokeWidth={1.5} /></a>
               <StoryFilm />
             </div>
           </div>

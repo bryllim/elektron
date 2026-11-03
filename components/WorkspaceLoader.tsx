@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { playSfx, unlockSfx } from "@/lib/sfx";
+import { Pointer } from "lucide-react";
 
 /** Everything the workspace's 3D scenes and map request on first view, grouped for the loader's status rows. */
 const MODELS = [
@@ -96,7 +97,7 @@ export default function WorkspaceLoader({ children }: { children: ReactNode }) {
             <strong>ELEKTRON</strong>
             <div className="ws-load-bar"><i style={{ transform: `scaleX(${Math.max(0.02, progress)})` }} /></div>
             <div className="ws-load-meta"><span>{status}</span><span>{Math.round(progress * 100)}%</span></div>
-            {ready && <button type="button" className="ws-load-tap" onClick={enter} autoFocus>Tap to continue</button>}
+            {ready && <button type="button" className="ws-load-tap" onClick={enter} autoFocus><Pointer size={16} strokeWidth={1.8} /> Tap anywhere to continue</button>}
           </div>
         </div>
       )}

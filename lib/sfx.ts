@@ -30,7 +30,7 @@ export function unlockSfx() {
     ctx = new AC();
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -18; comp.ratio.value = 4;
-    master = ctx.createGain(); master.gain.value = 0.32;
+    master = ctx.createGain(); master.gain.value = 0.16;
     master.connect(comp).connect(ctx.destination);
   }
   if (ctx.state === "suspended") void ctx.resume();
@@ -70,6 +70,32 @@ function noise(dur: number, { gain = 0.12, from = 400, to = 2400, q = 0.9, delay
   src.start(t); src.stop(t + dur + 0.02);
 }
 
+/** A short, sharp mechanical click: a ~15 ms high-passed noise transient over a tiny low body. */
+function clickTransient() {
+  if (!ctx || !master) return;
+  const t = ctx.currentTime, dur = 0.016;
+  const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  // noise shaped by a steep exponential decay so the onset is instant and the tail is gone in a few ms
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.18));
+  const src = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), peak = ctx.createBiquadFilter(), g = ctx.createGain();
+  src.buffer = buffer;
+  hp.type = "highpass"; hp.frequency.value = 1800;
+  peak.type = "peaking"; peak.frequency.value = 4200; peak.Q.value = 1.4; peak.gain.value = 6;
+  g.gain.value = 0.5;
+  src.connect(hp).connect(peak).connect(g).connect(master);
+  src.start(t);
+  // the "body" of the switch: a very short low thump
+  const osc = ctx.createOscillator(), og = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(320, t);
+  osc.frequency.exponentialRampToValueAtTime(120, t + 0.025);
+  og.gain.setValueAtTime(0.12, t);
+  og.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+  osc.connect(og).connect(master);
+  osc.start(t); osc.stop(t + 0.04);
+}
+
 export function playSfx(sound: Sound) {
   if (muted || !ctx || ctx.state !== "running") return;
   switch (sound) {
@@ -81,8 +107,7 @@ export function playSfx(sound: Sound) {
       break;
     }
     case "click":
-      tone(1250, 0.06, { type: "triangle", gain: 0.13, to: 720 });
-      noise(0.03, { gain: 0.05, from: 3000, to: 5000, q: 2 });
+      clickTransient();
       break;
     case "open":
       tone(660, 0.12, { type: "triangle", gain: 0.1 });

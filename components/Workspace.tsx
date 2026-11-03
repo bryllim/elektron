@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { playSfx, setSfxMuted, sfxMuted, SFX_EVENT } from "@/lib/sfx";
 import {
   Zap,
+  UserRound,
   Volume2,
   VolumeX,
   MessageSquare,
@@ -334,10 +335,17 @@ export default function Workspace({
       enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
     { label: "Welcome", screen: "overview", visual: <VisWelcome />, title: "Welcome to Elektron", hideTitle: true,
       body: <>
-        <div className="ws-tour-note">
+        <div className="ws-tour-say">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/story/team/bryl.webp" alt="" width={34} height={34} />
+          <div className="ws-tour-say-stack">
+            <span className="ws-tour-say-name">Bryl</span>
+            <div className="ws-tour-note">
           <p><strong>Quick heads-up.</strong> We&apos;ve used Elektron on real plants.</p>
           <p>This hackathon version is a prototype on Meta&apos;s models. To keep plant data confidential, <strong>what you&apos;ll see here is a simulated recreation.</strong></p>
           <p>The plants are based on real solar, wind and geothermal sites we work with in the Philippines, with the names changed. Nothing here is connected to a real plant.</p>
+        </div>
+          </div>
         </div>
         This takes about <P tone="n" icon={<Clock3 {...pi} />}>two minutes</P>, and you <strong>don&apos;t need to know anything about power plants</strong>. We&apos;ll walk you through it.
       </>,
@@ -370,8 +378,8 @@ export default function Workspace({
     { label: "The answer", screen: "twin", visual: <VisEvidence />, target: "#elektron-agent .evidence-cards", title: "And it shows its work",
       body: <><strong>The verdict:</strong> the inverter got too hot and turned itself down, while the weather and its neighbors are fine. <strong>Don&apos;t just take its word for it.</strong> Click <P tone="b" icon={<Link2 {...pi} />}>EV-001</P> to see the exact data behind it.</>,
       enter: () => setAgentOpen(true) },
-    { label: "Test the fix", screen: "whatif", visual: <VisWhatIf />, target: ".modal", title: "Try the fix before the drive",
-      body: <><strong>Before anyone gets in the truck</strong>, try the fix on a <P tone="k" icon={<Copy {...pi} />}>copy</P> of the plant. Letting INV-07 cool down for 30 minutes costs <P tone="r">0.156 MWh</P>, and <strong>the real plant stays untouched</strong>.</>,
+    { label: "Test the fix", screen: "whatif", visual: <VisWhatIf />, target: ".modal", title: "Try the fix before sending any personnel",
+      body: <><strong>Before sending any personnel</strong>, try the fix on a <P tone="k" icon={<Copy {...pi} />}>copy</P> of the plant. Letting INV-07 cool down for 30 minutes costs <P tone="r">0.156 MWh</P>, and <strong>the real plant stays untouched</strong>.</>,
       enter: () => { setAgentOpen(false); tourCase(); setBranch({ kind: "outage", assetId: "INV-07", duration: 30, reduction: 100 }); setModal("simulation"); } },
     { label: "More cases", screen: "twin", visual: <VisCases />, target: ".scenario-picker", title: "Not every dip is a problem",
       body: <>Want to see Elektron <strong>catch a false alarm</strong>? Pick a different situation here: <P tone="b" icon={<CloudRain {...pi} />}>rain</P>, a <P tone="n" icon={<WifiOff {...pi} />}>quiet sensor</P>, or a full-blown <P tone="r">typhoon</P>.</>,
@@ -480,9 +488,9 @@ export default function Workspace({
             <ArrowUpRight size={13} />
           </button>
           <div className="user-profile">
-            <span className="user-avatar">BL</span>
+            <span className="user-avatar"><UserRound size={14} /></span>
             <div>
-              <strong>Bryl Lim</strong>
+              <strong>Admin user</strong>
               <small>Workspace administrator</small>
             </div>
             <span className="profile-online" />
