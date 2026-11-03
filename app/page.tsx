@@ -17,7 +17,7 @@ import "./story.css";
 export const metadata: Metadata = {
   title: "Elektron — Find the cause. Test the fix.",
   description:
-    "Electrical engineers in the Philippines built Elektron to investigate renewable power drops with Muse, evidence and a 3D digital twin. Official entry, Meta Global AI Developer Hackathon. Fictional fleet, simulated operations.",
+    "Built alongside electrical engineers and power plants in the Philippines, Elektron investigates renewable power drops with Muse, evidence and a 3D digital twin. Official entry, Meta Global AI Developer Hackathon. Fictional fleet, simulated operations.",
 };
 
 type Tone = "o" | "b" | "g" | "r" | "n" | "k" | "nv";
@@ -106,7 +106,7 @@ export default function Page() {
           <div className="story-wrap story-split">
             <div data-reveal="left" data-stagger>
               <span className="story-label">Why we built it</span>
-              <h2 data-scroll="drift"><K>We&apos;re electrical engineers in the <Pill tone="g" icon={<MapPin {...I} />}>Philippines</Pill></K></h2>
+              <h2 data-scroll="drift"><K>We work with electrical engineers and power plants in the <Pill tone="g" icon={<MapPin {...I} />}>Philippines</Pill></K></h2>
               <p className="story-lead"><K>We keep renewable power plants running on regions across <Pill tone="g" icon={<MapPin {...I} />} tail=",">Luzon</Pill> <Pill tone="g" icon={<MapPin {...I} />} tail=",">Visayas</Pill> and <Pill tone="g" icon={<MapPin {...I} />} tail=".">Mindanao</Pill></K></p>
             </div>
             <figure className="story-map" data-reveal="zoom" data-scroll="float">

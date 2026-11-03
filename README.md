@@ -10,9 +10,9 @@ Elektron answers that question. It uses **Muse**, Meta's AI models, to check wha
 
 - **Try it:** https://elektron-eight-sigma.vercel.app/workspace (a guided tour starts automatically)
 - **Project page:** https://elektron-eight-sigma.vercel.app
-- **Film (2:22):** _YouTube link_
+- **Film (2:22):** https://www.youtube.com/watch?v=tz4qZuuWT8I
 
-> **Simulated data.** We are electrical engineers who work on solar, wind and geothermal plants in the Philippines. The plants in this demo are a simulation modeled on that work. The company, sites and readings are fictional, and no real plant is connected.
+> **Simulated data.** We work with electrical engineers and solar, wind and geothermal power plants in the Philippines. The plants in this demo are a simulation modeled on that work. The company, sites and readings are fictional, and no real plant is connected.
 
 ## How it works
 

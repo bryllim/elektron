@@ -315,7 +315,7 @@ export default function Workspace({
   const tourSteps: TourStep[] = [
     { label: "Welcome", title: "One power drop, investigated end to end",
       body: <>
-        <span className="ws-tour-note"><P tone="k" icon={<Activity {...pi} />}>Simulated readings</P> The fleet you are about to see is a simulation modeled closely on the solar, wind and geothermal plants we work on as electrical engineers in the Philippines. Names and identities are replaced and no live plant is connected, but the equipment, readings and failure patterns mirror what we deal with in real operations.</span>
+        <span className="ws-tour-note"><P tone="k" icon={<Activity {...pi} />}>Simulated readings</P> The fleet you are about to see is a simulation modeled closely on the solar, wind and geothermal plants we work with, alongside electrical engineers, in the Philippines. Names and identities are replaced and no live plant is connected, but the equipment, readings and failure patterns mirror what we deal with in real operations.</span>
         When a plant&apos;s output <P tone="o" icon={<TrendingDown {...pi} />}>drops</P>, an engineer has to work out why before sending a crew. A <P tone="o" icon={<ZapOff {...pi} />}>failing inverter</P>, a <P tone="b" icon={<CloudRain {...pi} />}>passing cloud</P> and a <P tone="n" icon={<WifiOff {...pi} />}>dead sensor</P> all look the same on a chart. This two-minute tour walks one case through Elektron.
       </>,
       enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
