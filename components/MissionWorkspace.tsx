@@ -576,7 +576,6 @@ export default function MissionWorkspace(p: Props) {
       </div>
       <div className="mission-footnote">
         <span>Fictional company · Simulated operations</span>
-        <span>Built by Bryl Lim with Engr. Will Delos Reyes</span>
       </div>
     </div>
   );

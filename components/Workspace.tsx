@@ -676,8 +676,7 @@ export default function Workspace({
               operations
             </span>
             <button onClick={() => setModal("about")}>
-              Built by Bryl Lim with Engr. Will Delos Reyes{" "}
-              <ArrowUpRight size={11} />
+              About Elektron <ArrowUpRight size={11} />
             </button>
           </footer>
         </main>
@@ -855,9 +854,6 @@ export default function Workspace({
               twin, and evidence-backed investigations in one operations
               workspace.
             </p>
-            <div className="about-credit">
-              Built by Bryl Lim with Engr. Will Delos Reyes
-            </div>
             <div className="about-facts">
               <div>
                 <span>Demo operator</span>
