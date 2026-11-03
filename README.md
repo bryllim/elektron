@@ -2,7 +2,7 @@
 
 **Elektron is an AI assistant for solar, wind and geothermal power plants. When a plant suddenly makes less electricity, it finds out why, shows you the proof, and tests the fix before anyone is sent out.**
 
-![Elektron: a wind turbine from the launch film](public/story/v4/film-poster.webp)
+[![Watch the Elektron film on YouTube](public/story/readme-film.jpg)](https://www.youtube.com/watch?v=tz4qZuuWT8I)
 
 In short:
 
@@ -107,4 +107,3 @@ To use the real Muse models, paste your Meta API key in the guided tour (it stay
 - [How the simulation works](docs/SIMULATION.md)
 - [Meta model setup](docs/META_SETUP.md) and [integration notes](public/story/meta-integration.md)
 - [3D asset sources and licenses](docs/ASSETS.md)
-- [Demo script](docs/DEMO.md)
