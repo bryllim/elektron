@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
+import { playSfx, unlockSfx } from "@/lib/sfx";
 
 /** Everything the workspace's 3D scenes and map request on first view, grouped for the loader's status rows. */
 const MODELS = [
@@ -44,6 +45,8 @@ export default function WorkspaceLoader({ children }: { children: ReactNode }) {
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [ready, setReady] = useState(false);
   const [gone, setGone] = useState(false);
+  // after loading, wait for a tap: it unlocks browser audio so the workspace can play its sounds
+  const [entered, setEntered] = useState(false);
   useEffect(() => {
     let cancelled = false;
     const loaded = new Map<string, number>(), totals = new Map<string, number>();
@@ -74,23 +77,26 @@ export default function WorkspaceLoader({ children }: { children: ReactNode }) {
     return () => { cancelled = true; clearTimeout(safety); };
   }, []);
   useEffect(() => {
-    if (!ready) return;
+    if (!entered) return;
     const t = setTimeout(() => setGone(true), 900);
     return () => clearTimeout(t);
-  }, [ready]);
+  }, [entered]);
+  const enter = () => { if (!ready || entered) return; unlockSfx(); playSfx("boot"); setEntered(true); };
   const current = GROUPS.find((g) => (counts[g.id] ?? 0) < g.files.length);
   const status = ready ? "Ready" : current ? `Loading ${current.label.toLowerCase()}` : "Preparing the twin viewer";
   return (
     <>
-      {ready && children}
+      {entered && children}
       {!gone && (
-        <div className={`ws-loader ${ready ? "is-done" : ""}`} role="progressbar" aria-label="Loading the Elektron workspace" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}>
+        <div className={`ws-loader ${entered ? "is-done" : ""} ${ready ? "is-ready" : ""}`} onClick={enter}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") enter(); }} tabIndex={ready ? 0 : -1} role="progressbar" aria-label="Loading the Elektron workspace" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}>
           <div className="ws-load">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/story/v4/elektron-icon.png" alt="" width={52} height={52} />
             <strong>ELEKTRON</strong>
             <div className="ws-load-bar"><i style={{ transform: `scaleX(${Math.max(0.02, progress)})` }} /></div>
             <div className="ws-load-meta"><span>{status}</span><span>{Math.round(progress * 100)}%</span></div>
+            {ready && <button type="button" className="ws-load-tap" onClick={enter} autoFocus>Tap to continue</button>}
           </div>
         </div>
       )}

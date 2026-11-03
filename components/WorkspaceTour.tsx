@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, createContext } from "react";
+import { playSfx } from "@/lib/sfx";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 
 /** Lets a step's own content move the tour (e.g. a step with custom buttons). */
@@ -46,6 +47,7 @@ export default function WorkspaceTour({ steps, open, onClose }: { steps: TourSte
   // enter the step's state, then follow its target (it may mount a moment later, e.g. Muse's evidence)
   useEffect(() => {
     if (!open) return;
+    playSfx("step");
     steps[index].enter?.();
     setBox(null);
     let frame = 0;
@@ -78,6 +80,7 @@ export default function WorkspaceTour({ steps, open, onClose }: { steps: TourSte
     if (!from || !dest || from === dest) { setIndex(to); return; }
     // fade to black, switch the workspace while hidden, then fade back in once it has settled
     setFading(true);
+    playSfx("whoosh");
     fadeTimers.current.push(window.setTimeout(() => {
       setIndex(to);
       fadeTimers.current.push(window.setTimeout(() => setFading(false), 450));

@@ -1,7 +1,10 @@
 "use client";
 import { useState, useEffect, useRef, useMemo } from "react";
+import { playSfx, setSfxMuted, sfxMuted, SFX_EVENT } from "@/lib/sfx";
 import {
   Zap,
+  Volume2,
+  VolumeX,
   MessageSquare,
   PanelLeftOpen,
   PanelLeftClose,
@@ -149,6 +152,18 @@ export default function Workspace({
     agentToggle.current?.focus({ preventScroll: true });
     setAgentOpen(false);
   }
+  const agentMounted = useRef(false);
+  useEffect(() => {
+    if (!agentMounted.current) { agentMounted.current = true; return; }
+    playSfx(agentOpen ? "open" : "close");
+  }, [agentOpen]);
+  const [soundOn, setSoundOn] = useState(true);
+  useEffect(() => {
+    const sync = () => setSoundOn(!sfxMuted());
+    sync();
+    window.addEventListener(SFX_EVENT, sync);
+    return () => window.removeEventListener(SFX_EVENT, sync);
+  }, []);
   // a tap outside the agent panel minimizes it; drags (orbiting the 3D twin), dialogs, the tour and the click that opened it don't count
   const agentOpenedAt = useRef(0);
   useEffect(() => {
@@ -319,7 +334,11 @@ export default function Workspace({
       enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
     { label: "Welcome", screen: "overview", visual: <VisWelcome />, title: "Welcome to Elektron", hideTitle: true,
       body: <>
-        <span className="ws-tour-note"><P tone="k" icon={<Activity {...pi} />}>Simulated readings</P> Quick heads-up: <strong>we&apos;ve used Elektron on real plants</strong>. This hackathon version is a prototype on Meta&apos;s models, and to keep plant data <P tone="k" icon={<Lock {...pi} />}>confidential</P>, <strong>what you&apos;ll see here is a simulated recreation.</strong> The plants are based on real <P tone="o" icon={<Sun {...pi} />}>solar</P>, <P tone="b" icon={<Wind {...pi} />}>wind</P> and <P tone="r" icon={<Flame {...pi} />}>geothermal</P> sites we work with in the <P tone="g" icon={<MapPin {...pi} />}>Philippines</P>, with the names changed, and nothing here is connected to a real plant.</span>
+        <div className="ws-tour-note">
+          <p><strong>Quick heads-up.</strong> We&apos;ve used Elektron on real plants.</p>
+          <p>This hackathon version is a prototype on Meta&apos;s models. To keep plant data confidential, <strong>what you&apos;ll see here is a simulated recreation.</strong></p>
+          <p>The plants are based on real solar, wind and geothermal sites we work with in the Philippines, with the names changed. Nothing here is connected to a real plant.</p>
+        </div>
         This takes about <P tone="n" icon={<Clock3 {...pi} />}>two minutes</P>, and you <strong>don&apos;t need to know anything about power plants</strong>. We&apos;ll walk you through it.
       </>,
       enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
@@ -541,6 +560,15 @@ export default function Workspace({
               onClick={() => setMotion(!motion)}
             >
               <Activity size={15} />
+            </button>
+            <button
+              className={`motion-toggle sound-toggle ${soundOn ? "active" : ""}`}
+              aria-label={soundOn ? "Mute interface sounds" : "Turn on interface sounds"}
+              title={soundOn ? "Mute sounds" : "Turn on sounds"}
+              aria-pressed={soundOn}
+              onClick={() => setSfxMuted(soundOn)}
+            >
+              {soundOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
             </button>
             <button
               className="icon-button notification-button"

@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState, type ReactNode } from "react";
 import { TourNav, TourPill } from "./WorkspaceTour";
 import { setVisitorKey, visitorKey } from "@/lib/visitor-key";
+import { playSfx } from "@/lib/sfx";
 import { MuseMark } from "./StoryMarks";
 import { ArrowRight, KeyRound, Lock, Zap, HardHat, MapPin, Check, Box, CloudLightning, CloudRain, Copy, FileText, Link2, Search, Sun, TriangleAlert, Users, WifiOff, ZapOff } from "lucide-react";
 
@@ -117,6 +118,7 @@ export function VisHello() {
     // the script is fixed; run once per mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => { if (shown > 0) playSfx("pop"); }, [shown]);
   const visible = items.slice(0, shown);
   return (
     <div className={`ws-chat ${done ? "done" : ""}`} data-shown={shown}>
@@ -146,7 +148,7 @@ export function TourKeyStep() {
   const [value, setValue] = useState("");
   const [saved, setSaved] = useState(false);
   useEffect(() => { setSaved(!!visitorKey()); }, []);
-  const save = () => { if (!value.trim()) return; setVisitorKey(value); setValue(""); setSaved(true); nav.next(); };
+  const save = () => { if (!value.trim()) return; setVisitorKey(value); setValue(""); setSaved(true); playSfx("success"); nav.next(); };
   return (
     <div className="ws-key">
       {saved ? (

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SfxProvider from "@/components/SfxProvider";
 export const metadata: Metadata = {
   title: "Elektron — Fleet operations",
   description:
@@ -12,7 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="dark">
-      <body>{children}</body>
+      <body>
+        <SfxProvider />
+        {children}
+      </body>
     </html>
   );
 }

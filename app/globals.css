@@ -8212,3 +8212,13 @@ img.agent-intro-mark { display: block; width: 26px; height: 26px; border-radius:
 .ws-key-skip { font-size: 13px; color: #5d635e; padding: 8px 4px; } .ws-key-skip:hover { color: #0b0c0a; }
 .ws-key-actions .ws-tour-next:disabled { opacity: 0.45; cursor: not-allowed; }
 .ws-tour-body .ws-key { font-size: 13px; }
+.ws-tour-note { display: flex; flex-direction: column; gap: 8px; }
+.ws-tour-note p { margin: 0; }
+/* loader: tap to continue (unlocks audio) */
+.ws-loader.is-ready { cursor: pointer; }
+.ws-load-tap { margin-top: 30px; padding: 11px 22px; border: 1px solid rgba(255, 255, 255, 0.18); background: none; color: #f4f6f0; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; animation: ws-tap-in 0.6s ease both, ws-tap-breathe 2.4s ease-in-out 0.6s infinite; transition: background 0.2s, border-color 0.2s; }
+.ws-load-tap:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.4); }
+.ws-loader.is-ready .ws-load-meta { opacity: 0.4; transition: opacity 0.4s; }
+@keyframes ws-tap-in { from { opacity: 0; transform: translateY(6px); } }
+@keyframes ws-tap-breathe { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) { .ws-load-tap { animation: none; } }

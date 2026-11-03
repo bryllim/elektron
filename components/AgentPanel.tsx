@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { playSfx } from "@/lib/sfx";
 import { META_KEY_EVENT, metaKeyHeaders } from "@/lib/visitor-key";
 import {
   ChevronDown,
@@ -124,6 +125,7 @@ export default function AgentPanel({
       const result: AgentResult = await res.json();
       if (id !== run.current || controller.signal.aborted) return;
       setMode(result.mode);
+      playSfx("receive");
       setMessages((m) => [
         ...m,
         { role: "assistant", text: result.answer, result },
