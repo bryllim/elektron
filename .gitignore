@@ -30,3 +30,8 @@ __pycache__/
 /video/elektron-launch-v4/film/*.wav
 /video/elektron-launch-v4/film/video60.mp4
 /video/elektron-launch-v4/film/Elektron_Launch_v4*.mp4
+.vercel
+
+# Film sources, renders and narration stay local (not on GitHub)
+/video/
+/screenshots/

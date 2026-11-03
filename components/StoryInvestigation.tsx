@@ -79,7 +79,7 @@ export default function StoryInvestigation({ cases }: { cases: StoryCase[] }) {
             points={current.points}
             height={200}
             unit="kW"
-            color="#7a9bff"
+            color="#d6ff3d"
             actualLabel="Simulated output"
             expectedLabel="Weather-adjusted"
           />

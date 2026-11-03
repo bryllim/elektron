@@ -13,7 +13,7 @@ export default function StoryFilm() {
       dialog.current?.showModal();
       void player.current?.play().catch(() => {});
       dialog.current?.querySelector<HTMLButtonElement>(".story-film-close")?.focus({ preventScroll: true });
-    }}><Play size={16} strokeWidth={1.5} fill="currentColor" />Watch the film <span>2 min</span></button>
+    }}><Play size={16} strokeWidth={1.5} fill="currentColor" />Watch with sound <span>2:22</span></button>
     <dialog ref={dialog} id="elektron-film" className="story-film-dialog" aria-labelledby="film-title" onCancel={() => player.current?.pause()} onClose={() => {
       player.current?.pause();
       trigger.current?.focus({ preventScroll: true });
@@ -22,12 +22,12 @@ export default function StoryFilm() {
       const box = event.currentTarget.getBoundingClientRect();
       if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) close();
     }}>
-      <div className="story-film-bar"><h2 id="film-title">ELEKTRON <span>The afternoon alarm</span></h2><button className="story-film-close" aria-label="Close film" onClick={close}><X size={16} strokeWidth={1.5} /></button></div>
-      <video ref={player} controls playsInline preload="none" poster="/story/elektron-polished-poster.webp" aria-label="ELEKTRON: The afternoon alarm. A two-minute conversation from Bryl, Engr. William and Meta Muse, with animated messages, a Philippine fleet map and a typhoon simulation.">
-        <source src="/story/elektron-film.mp4?v=production-polish" type="video/mp4" />
+      <div className="story-film-bar"><h2 id="film-title">ELEKTRON <span>Launch film</span></h2><button className="story-film-close" aria-label="Close film" onClick={close}><X size={16} strokeWidth={1.5} /></button></div>
+      <video ref={player} controls playsInline preload="none" poster="/story/v4/film-poster.webp" aria-label="Elektron launch film, 2 minutes 22 seconds, narrated">
+        <source src="/story/elektron-film.mp4" type="video/mp4" />
         Your browser does not support this video. <a href="/story/elektron-film.mp4">Download the film.</a>
       </video>
-      <p>Electrical engineering × Meta AI <a href="/workspace?case=derating">Explore the investigation ↗</a></p>
+      <p>Fictional fleet · Simulated operations <a href="/workspace?case=derating">Explore the investigation ↗</a></p>
     </dialog>
   </>;
 }

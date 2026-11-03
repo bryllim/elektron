@@ -1,0 +1,10 @@
+video/
+screenshots/
+docs/
+tests/
+scripts/
+simulation/assets/
+*.blend
+node_modules/
+.next/
+.git/

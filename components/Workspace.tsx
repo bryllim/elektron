@@ -40,6 +40,18 @@ import {
   MapPin,
   Activity,
   Layers3,
+  Compass,
+  TrendingDown,
+  ZapOff,
+  CloudRain,
+  WifiOff,
+  Thermometer,
+  Users,
+  Sun,
+  Lock,
+  Copy,
+  Flame,
+  Box as BoxIcon,
 } from "lucide-react";
 import FleetOverview, { TechIcon } from "./FleetOverview";
 import MissionWorkspace from "./MissionWorkspace";
@@ -52,6 +64,7 @@ import AgentPanel, { AgentResult } from "./AgentPanel";
 import MetaIntegration from "./MetaIntegration";
 import SimulationModal from "./SimulationModal";
 import Modal from "./Modal";
+import WorkspaceTour, { TourPill as P, type TourStep } from "./WorkspaceTour";
 import Chart from "./Chart";
 import {
   SITES,
@@ -124,7 +137,8 @@ export default function Workspace({
     [search, setSearch] = useState(""),
     [mobileMenu, setMobileMenu] = useState(false),
     [companyOpen, setCompanyOpen] = useState(false),
-    [toast, setToast] = useState("");
+    [toast, setToast] = useState(""),
+    [tourOpen, setTourOpen] = useState(false);
   const dark = true;
   const immersive =
     ["silangan", "amihan", "habagat", "bukal"].includes(siteId ?? "") &&
@@ -176,6 +190,14 @@ export default function Workspace({
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
   }, []);
+  useEffect(() => {
+    const forced = new URLSearchParams(location.search).get("tour") === "1";
+    if (forced || !localStorage.getItem("elektron-tour-seen")) setTourOpen(true);
+  }, []);
+  function closeTour() {
+    localStorage.setItem("elektron-tour-seen", "1");
+    setTourOpen(false);
+  }
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(""), 3500);
@@ -273,6 +295,55 @@ export default function Workspace({
     setEvidence(e);
     setModal("evidence");
   }
+  // Guided tour for judges: the derating case end to end (alert → twin → evidence → Muse → what-if → other cases).
+  function tourCase() {
+    const item = DEMO_CASES.find((c) => c.id === "derating")!;
+    setScenario(item.scenario);
+    setMinute(item.minute);
+    setPlaying(false);
+  }
+  function tourTwin() {
+    tourCase();
+    setModal(null);
+    setSiteId("silangan");
+    setView("twin");
+    setSelected("INV-07");
+    setOverlay("deviation");
+    setFocus((n) => n + 1);
+  }
+  const pi = { size: 13, strokeWidth: 2.4 } as const;
+  const tourSteps: TourStep[] = [
+    { label: "Welcome", title: "One power drop, investigated end to end",
+      body: <>
+        <span className="ws-tour-note"><P tone="k" icon={<Activity {...pi} />}>Simulated readings</P> The fleet you are about to see is a simulation modeled closely on the solar, wind and geothermal plants we work on as electrical engineers in the Philippines. Names and identities are replaced and no live plant is connected, but the equipment, readings and failure patterns mirror what we deal with in real operations.</span>
+        When a plant&apos;s output <P tone="o" icon={<TrendingDown {...pi} />}>drops</P>, an engineer has to work out why before sending a crew. A <P tone="o" icon={<ZapOff {...pi} />}>failing inverter</P>, a <P tone="b" icon={<CloudRain {...pi} />}>passing cloud</P> and a <P tone="n" icon={<WifiOff {...pi} />}>dead sensor</P> all look the same on a chart. This two-minute tour walks one case through Elektron.
+      </>,
+      enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
+    { label: "Fleet", target: ".attention-banner", title: "The alert",
+      body: <>Eight plants across <P tone="g" icon={<MapPin {...pi} />}>Luzon, Visayas and Mindanao</P> run on one clock. <P tone="o" icon={<TriangleAlert {...pi} />}>Silangan Solar</P> is flagged: one of its inverters is producing far less than the weather says it should.</>,
+      enter: () => { tourCase(); setModal(null); setAgentOpen(false); back(); } },
+    { label: "3D twin", target: ".mission-scene", title: "Go to the plant, in 3D",
+      body: <>Silangan Solar opens as a <P tone="b" icon={<BoxIcon {...pi} />}>live 3D twin</P> built from <P tone="nv">NVIDIA SimReady</P> and other sourced models. The deviation overlay colors equipment by its gap from weather-adjusted output; <P tone="o" icon={<Zap {...pi} />}>INV-07</P> stands out.</>,
+      enter: () => { tourTwin(); setAgentOpen(false); } },
+    { label: "Evidence", target: ".asset-panel", title: "Read the numbers, not a guess",
+      body: <>INV-07 makes <P tone="r" icon={<TrendingDown {...pi} />}>322 kW</P> against <P tone="n">699 kW</P> expected, runs at <P tone="r" icon={<Thermometer {...pi} />}>74.3 °C</P> inside, and the controller logged a <P tone="o" icon={<Flame {...pi} />}>thermal derating</P> event. Every number comes from the <P tone="k">deterministic engine</P>, not a language model.</>,
+      enter: () => { tourTwin(); setAgentOpen(false); } },
+    { label: "Muse", target: "#elektron-agent", title: "Ask Muse why",
+      body: <><P tone="b">Muse</P> investigates like an engineer: read-only tools compare the <P tone="b" icon={<Users {...pi} />}>neighbors</P>, check the <P tone="o" icon={<Sun {...pi} />}>weather</P> and read the <P tone="g" icon={<FileText {...pi} />}>controller log</P>, then explain the cause. Without a Meta API key this runs a clearly labeled <P tone="n">scripted agent</P> over the same tools.</>,
+      enter: () => { tourTwin(); openAgent("Why is INV-07 underperforming?"); } },
+    { label: "Citations", target: "#elektron-agent .evidence-cards", title: "Every claim links to its evidence",
+      body: <>The answer cites <P tone="b" icon={<Link2 {...pi} />}>EV-001</P> and friends. Click any ID to open the exact tool result behind the sentence. The model explains; the <P tone="k">engine owns the numbers</P>; the operator owns the decision.</>,
+      enter: () => setAgentOpen(true) },
+    { label: "What-if", target: ".modal", title: "Test the fix before anyone drives out",
+      body: <>Run the fix on a <P tone="k" icon={<Copy {...pi} />}>copy</P> of the plant first. A <P tone="o">30-min</P> cooling outage on INV-07 costs <P tone="r" icon={<TrendingDown {...pi} />}>0.156 MWh</P> against the baseline, known before dispatch. Live data stays <P tone="g" icon={<Lock {...pi} />}>untouched</P>.</>,
+      enter: () => { setAgentOpen(false); tourCase(); setBranch({ kind: "outage", assetId: "INV-07", duration: 30, reduction: 100 }); setModal("simulation"); } },
+    { label: "Other cases", target: ".playbook-toggle:not(.tour-toggle)", title: "Not every drop is a fault",
+      body: <>The Playbook loads the other cases: <P tone="b" icon={<CloudRain {...pi} />}>rain</P> that lowers output with <P tone="g" icon={<Check {...pi} />}>no fault</P>, a <P tone="n" icon={<WifiOff {...pi} />}>quiet sensor</P> shown as unknown, not zero, and a <P tone="r" icon={<Wind {...pi} />}>typhoon</P> replayed across the fleet to rank which sites get hit hardest.</>,
+      enter: () => setModal(null) },
+    { label: "Done", title: "Find the cause. Test the fix. Hand it over.",
+      body: <>That is Elektron: <P tone="b">evidence-backed</P> investigation with Muse, a <P tone="b" icon={<BoxIcon {...pi} />}>3D twin</P> to see it on site, and a <P tone="k">what-if</P> before dispatch. Explore freely, or replay from <P tone="g" icon={<Compass {...pi} />}>Guided tour</P> in the top bar.</>,
+      enter: () => setModal(null) },
+  ];
   return (
     <div
       className={`app-shell ${agentOpen ? "with-agent" : ""} ${timelineMinimized ? "timeline-minimized" : ""}`}
@@ -431,6 +502,13 @@ export default function Workspace({
               <span className="tiny-dot green" />
               SIMULATED ENVIRONMENT
             </span>
+            <button
+              className="playbook-toggle tour-toggle"
+              onClick={() => setTourOpen(true)}
+            >
+              <Compass size={14} />
+              <span>Guided tour</span>
+            </button>
             <button
               className="playbook-toggle"
               onClick={() => setModal("guide")}
@@ -708,6 +786,7 @@ export default function Workspace({
         onEvidence={showEvidence}
         onIntegrations={() => setModal("meta")}
       />
+      <WorkspaceTour steps={tourSteps} open={tourOpen} onClose={closeTour} />
       {toast && (
         <div className="toast" role="status">
           <Check size={16} />

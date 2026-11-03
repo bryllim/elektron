@@ -7841,3 +7841,51 @@ body {
   letter-spacing: .04em;
   background: #0c0e0d;
 }
+
+/* workspace loader: holds the workspace back until its 3D assets are cached */
+.ws-loader { position: fixed; inset: 0; z-index: 1100; display: grid; place-items: center; background: radial-gradient(1200px 800px at 70% 110%, rgba(206,255,40,.16), transparent 60%), #060706; color: #f4f6f0; transition: opacity .6s ease, visibility .6s; }
+.ws-loader.is-done { opacity: 0; visibility: hidden; }
+.ws-loader-card { display: grid; justify-items: center; gap: 12px; width: min(360px, calc(100% - 48px)); text-align: center; }
+.ws-loader-card img { border-radius: 22%; filter: drop-shadow(0 20px 50px rgba(206,255,40,.3)); animation: ws-loader-pulse 1.8s ease-in-out infinite; }
+.ws-loader-card strong { margin-top: 8px; font-size: 15px; letter-spacing: .22em; }
+.ws-loader-card > span { font-size: 14px; color: #a3a8a2; min-height: 21px; }
+.ws-loader-bar { width: 100%; height: 4px; margin-top: 8px; border-radius: 4px; background: #1f221f; overflow: hidden; }
+.ws-loader-bar i { display: block; height: 100%; border-radius: 4px; background: #d6ff3d; box-shadow: 0 0 14px rgba(214,255,61,.7); transition: width .3s ease; }
+.ws-loader-card small { font-size: 11px; color: #6f756f; letter-spacing: .04em; }
+@keyframes ws-loader-pulse { 50% { transform: scale(.94); } }
+
+/* guided tour */
+.ws-tour { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+.ws-tour-dim { position: absolute; inset: 0; background: rgba(3,4,3,.66); backdrop-filter: blur(2px); pointer-events: auto; }
+.ws-tour-spot { position: absolute; border-radius: 18px; box-shadow: 0 0 0 9999px rgba(3,4,3,.66), 0 0 0 2px #d6ff3d, 0 0 32px 4px rgba(214,255,61,.45); transition: top .45s cubic-bezier(.22,1,.36,1), left .45s cubic-bezier(.22,1,.36,1), width .45s cubic-bezier(.22,1,.36,1), height .45s cubic-bezier(.22,1,.36,1); }
+.ws-tour-card { position: absolute; width: min(340px, calc(100vw - 32px)); padding: 20px 22px 18px; border-radius: 20px; background: #f2f3ee; color: #0b0c0a; box-shadow: 0 30px 80px rgba(0,0,0,.5); pointer-events: auto; animation: ws-tour-in .45s cubic-bezier(.22,1,.36,1) both; transition: top .45s cubic-bezier(.22,1,.36,1), left .45s cubic-bezier(.22,1,.36,1); }
+.ws-tour-card.centered { width: min(520px, calc(100vw - 32px)); padding: 28px 30px 24px; }
+.ws-tour-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #5d635e; letter-spacing: .04em; }
+.ws-tour-close { display: grid; place-items: center; width: 30px; height: 30px; margin: -6px -8px -6px 0; border-radius: 50%; color: #5d635e; }
+.ws-tour-close:hover { background: rgba(11,12,10,.07); color: #0b0c0a; }
+.ws-tour-card h2 { margin: 10px 0 8px; font-size: 21px; line-height: 1.2; letter-spacing: -.02em; font-weight: 650; color: #0b0c0a; }
+.ws-tour-card.centered h2 { font-size: 26px; }
+.ws-tour-card p { margin: 0; font-size: 14px; line-height: 1.6; color: #3b403c; }
+.ws-tour-progress { display: flex; gap: 5px; margin-top: 16px; }
+.ws-tour-progress i { flex: 1; height: 3px; border-radius: 3px; background: rgba(11,12,10,.12); transition: background .3s; }
+.ws-tour-progress i.done { background: rgba(11,12,10,.45); } .ws-tour-progress i.on { background: #0b0c0a; }
+.ws-tour-actions { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+.ws-tour-actions > span { flex: 1; }
+.ws-tour-skip { font-size: 13px; color: #5d635e; padding: 8px 4px; } .ws-tour-skip:hover { color: #0b0c0a; }
+.ws-tour-back { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: rgba(11,12,10,.07); color: #0b0c0a; }
+.ws-tour-next { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 12px; background: #0b0c0a; color: #d6ff3d; font-size: 14px; font-weight: 600; }
+.ws-tour-next:hover { background: #1f221f; }
+.tour-toggle { color: #d6ff3d; }
+@keyframes ws-tour-in { from { opacity: 0; transform: translateY(10px) scale(.98); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@media (max-width: 760px) { .ws-tour-card:not(.centered) { left: 16px !important; top: auto !important; bottom: 16px; } }
+@media (prefers-reduced-motion: reduce) { .ws-tour-spot, .ws-tour-card, .ws-loader-card img, .ws-loader { transition: none; animation: none; } }
+/* tour pills (same as the landing page's light-scene pills) */
+.ws-tour-body { margin: 0; font-size: 14px; line-height: 1.75; color: #3b403c; }
+.ws-pill { display: inline-flex; align-items: center; gap: .3em; padding: .05em .45em .1em .38em; margin: 0 .04em; border-radius: .45em; font-size: .92em; font-weight: 600; line-height: 1.35; vertical-align: .04em; white-space: nowrap; }
+.ws-pill svg { flex: none; }
+.ws-pill.o { background: #ffecd2; color: #e07a00; } .ws-pill.b { background: #dfe8ff; color: #1f5bff; } .ws-pill.g { background: #dcf4e1; color: #16a34a; }
+.ws-pill.r { background: #ffe1dc; color: #e0533d; } .ws-pill.n { background: #e8e9e4; color: #5d635e; } .ws-pill.k { background: #0b0c0a; color: #d6ff3d; }
+.ws-pill.nv { background: rgba(118,185,0,.18); color: #4f8a00; }
+.ws-tour-note { display: block; margin: 2px 0 12px; padding: 12px 14px; border-radius: 14px; background: #e8e9e4; color: #2b302c; font-size: 13px; line-height: 1.65; }
+.ws-tour-note .ws-pill { margin-right: 6px; }
+.ws-tour-card:focus { outline: none; }
